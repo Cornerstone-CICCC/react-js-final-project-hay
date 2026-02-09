@@ -1,11 +1,9 @@
-'use client'
+'use client';
 
-type Props = {}
+type Props = {};
 
 const ProductList = (props: Props) => {
-  return (
-    <div>ProductList</div>
-  )
-}
+  return <div>ProductList</div>;
+};
 
-export default ProductList
+export default ProductList;
