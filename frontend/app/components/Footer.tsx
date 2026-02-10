@@ -3,9 +3,9 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer>
-      <div className="flex justify-between">
-        <ul className="flex gap-2">
+    <footer className='border-t-5 border-[#B5EBE6] pb-4 text-sm'>
+      <div className="flex gap-8 justify-between flex-col px-4 py-6 md:flex-row md:max-w-5xl md:mx-auto md:pt-10 md:pb-8">
+        <ul className="flex gap-3 flex-col md:flex-row md:gap-7">
           <li>
             <Link href="/">Home</Link>
           </li>
@@ -17,48 +17,29 @@ const Footer = () => {
           </li>
         </ul>
         <div>
-          <p>We accept the following payment options.</p>
-          <ul className="flex gap-2 items-center">
-            <li>
-              <Image
-                src="../assets/footer/visa.png"
-                alt="VISA"
-                width={66}
-                height={67}
-                unoptimized
-              />
+          <p className='underline'>We accept the following payment options.</p>
+          <ul className="flex gap-3 items-center md:gap-4">
+            <li className='w-[44] md:w-[66]'>
+              <Image src="/assets/footer/visa.png" alt="VISA" width={66} height={67} />
             </li>
-            <li>
-              <Image
-                src="../assets/footer/master.png"
-                alt="master"
-                width={49}
-                height={31}
-                unoptimized
-              />
+            <li className='w-[32] md:w-[49]'>
+              <Image src="/assets/footer/master.png" alt="master" width={49} height={31} />
             </li>
-            <li>
+            <li className='w-[62] md:w-[78]'>
               <Image
-                src="../assets/footer/american-express.png"
+                src="/assets/footer/american-express.png"
                 alt="AMERICAN EXPRESS"
                 width={78}
                 height={78}
-                unoptimized
               />
             </li>
-            <li>
-              <Image
-                src="../assets/footer/apple-pay.png"
-                alt="Apply Pay"
-                width={49}
-                height={48}
-                unoptimized
-              />
+            <li className='w-[32] md:w-[49]'>
+              <Image src="/assets/footer/apple-pay.png" alt="Apply Pay" width={49} height={48} />
             </li>
           </ul>
         </div>
       </div>
-      <small className="text-center block">&copy; Shine Studio</small>
+      <small className="text-center block">&copy; Shine Studio. {new Date().getFullYear()}</small>
     </footer>
   );
 };
