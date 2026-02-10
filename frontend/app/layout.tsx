@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito_Sans, Julius_Sans_One} from "next/font/google";
+import { Nunito_Sans, Julius_Sans_One, Italiana} from "next/font/google";
 import "./globals.css";
 
 const nunitoSans = Nunito_Sans({
@@ -7,11 +7,17 @@ const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
 });
 
-const juliusSansOne = Julius_Sans_One({
+export const juliusSansOne = Julius_Sans_One({
   variable: "--font-julius-sans-one",
   weight:"400",
   subsets: ["latin"],
 });
+
+export const italiana = Italiana({
+  variable:'--font-italiana',
+  weight:"400",
+  subsets:["latin"]
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${nunitoSans.variable} antialiased`}
+        className={`${nunitoSans.className} antialiased`}
       >
         {children}
       </body>

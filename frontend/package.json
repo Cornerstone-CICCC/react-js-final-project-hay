@@ -10,12 +10,16 @@
     "fix": "npx @biomejs/biome check --write"
   },
   "lint-staged": {
-    "*.{js,ts,jsx,tsx}": ["eslint --fix", "prettier --write"]
+    "*.{js,ts,jsx,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-icons": "^5.5.0",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
