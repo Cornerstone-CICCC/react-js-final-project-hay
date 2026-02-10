@@ -3,7 +3,7 @@ import { PiHeartThin  } from "react-icons/pi";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { Product } from "@/app/types/products.type"
 import Image from "next/image"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 type Props = {
@@ -13,8 +13,15 @@ type Props = {
 const ItemDetail = ({product}: Props) => {
     const [quantity, setQuantity]= useState<number>(1)
     const [isStock, setIsStock] = useState(true)
+    const [isLiked, setIsLiked] = useState(false)
+    const [isInBag, setIsInBag] = useState(false)
+
+    useEffect(()=>{
+        //set liked and in bag
+    },[])
 
   return (
+    <>
     <div className="md:flex gap-8 p-6 justify-center">
         <Image
         src={product.image}
@@ -56,10 +63,10 @@ const ItemDetail = ({product}: Props) => {
                 </div>}
             </div>
 
-            <div className="text-[#008FAB] flex justify-between text-[16px]">
+            <div className="text-[#008FAB] flex gap-4 text-[16px] font-semibold">
                 <div className="flex items-center border border-[#008FAB]">
                     <button
-                    className="px-4 py-2 cursor-pointer"
+                    className="px-6 py-2 cursor-pointer"
                     onClick={()=>
                         setQuantity(prev=>{
                             if(prev===1) return 1
@@ -71,19 +78,31 @@ const ItemDetail = ({product}: Props) => {
                         {quantity}
                     </div>
                     <button
-                    className="px-4 py-2 cursor-pointer"
+                    className="px-6 py-2 cursor-pointer"
                     onClick={()=>setQuantity(prev=>prev+1)}>+</button>
                 </div>
 
-                <div>
+                <div
+                className="w-full text-center border border-[#008FAB] self-center py-2 hover:bg-[#008FAB] hover:text-white">
                     Add to Bag
                 </div>
 
             </div>
         </div>
-
-
+        
     </div>
+    <div
+    className="my-8 py-6 px-4 border-t border-b border-[rgba(0,143,171,0.5)] text-sm">
+        <div
+        className="max-w-[1200px] mx-auto">
+            <h2
+            className="font-bold text-[#008FAB] text-lg md:text-[20px] pb-4 ps-4">
+                Description
+            </h2>
+            {product.description}
+        </div>
+    </div>
+    </>
   )
 }
 

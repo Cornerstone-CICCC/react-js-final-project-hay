@@ -1,9 +1,10 @@
 'use client'
-import { PiHeartThin, PiHandbagThin  } from "react-icons/pi";
+import { PiHeartThin,PiHeartFill, PiHandbagThin,PiHandbagSimpleFill   } from "react-icons/pi";
 
 import { Product } from "@/app/types/products.type"
 import Image from "next/image"
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type Props = {
     product:Product
@@ -11,10 +12,14 @@ type Props = {
 
 const ItemCard = ({product}: Props) => {
     const router = useRouter()
+    const [isLiked, setIsLiked] = useState(false)
+    const [isInBag, setIsInBag] = useState(false)
     //should have isInCart and isInWishlist to 
-    const handleAddCart=()=>{
+    const handleToggleCart=()=>{
+        setIsInBag(prev=>!prev)
     }
-    const handleAddWishList=()=>{
+    const handleToggleWishList=()=>{
+        setIsLiked(prev=>!prev)
     }
 
     const directItemPage=()=>{
@@ -45,10 +50,25 @@ const ItemCard = ({product}: Props) => {
 
                 <div
                 className="flex gap-2 items-center">
-                    <PiHeartThin
-                    onClick={handleAddWishList}/>
-                    <PiHandbagThin 
-                    onClick={handleAddCart}/>
+                    <div
+                    className="cursor-pointer"
+                    onClick={handleToggleWishList}
+                    >
+                        {isLiked?
+                        <PiHeartFill 
+                        className="text-[#008FAB]"/>
+                        :<PiHeartThin/>
+                        }
+                    </div>
+                    
+                    <div
+                    className="cursor-pointer"
+                    onClick={handleToggleCart}>
+                        {isInBag?
+                        <PiHandbagSimpleFill
+                        className="text-[#008FAB]" />
+                        :<PiHandbagThin />}
+                    </div>
                 </div>
             </div>
         </div>

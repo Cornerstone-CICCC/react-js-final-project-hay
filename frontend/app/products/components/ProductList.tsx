@@ -1,12 +1,21 @@
 'use client'
 import { TbAdjustmentsHorizontal } from "react-icons/tb";
 import { useEffect, useState } from "react"
-import { Product } from "../../types/products.type"
+import { Category, Product } from "../../types/products.type"
 import { product } from "../dummy"
 import ItemCard from "./ItemCard"
 
+export interface FilterQuery{
+  availability:"in-stock"| "out-stock",
+  category:Category[],
+  priceFrom: number,
+  priceTo: number
+}
+
 const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([])
+  const [filterModalOpen, setFilterModalOpen]= useState<boolean>(false)
+  const [query, setQuery] = useState()
 
   useEffect(()=>{
     //setting up dummy data
@@ -21,15 +30,27 @@ const ProductList = () => {
     }
 
   },[])
+
   return (
     <div className="pt-4">
       <div
-      className="py-4 px-5 border-b w-full flex items-center flex-between">
+      className="py-4 px-5 border-b w-full flex items-center justify-between">
         <div
-        className="flex items-center gap-2">
+        className="flex items-center gap-2 cursor-pointer"
+        onClick={()=>setFilterModalOpen(prev=>!prev)}>
           Filter
           <TbAdjustmentsHorizontal
-          className="text-xl"/>
+          className="text-xl text-[#008FAB]"/>
+        </div>
+
+        <div>
+          <div>
+            {products.length} products
+          </div>
+
+          <div>
+
+          </div>
         </div>
 
       </div>

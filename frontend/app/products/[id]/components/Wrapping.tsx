@@ -31,7 +31,7 @@ const Wrapping = () => {
                 <div
                 className="h-full flex flex-col md:w-[50%]">
                     <div
-                    className={`text-lg md:text-3xl text-[#008FAB] border-b border-[rgba(0,143,171,0.5)] ${italiana.className}`}>
+                    className={`text-2xl md:text-3xl text-[#008FAB] border-b border-[rgba(0,143,171,0.5)] ${italiana.className}`}>
                         {item.title}</div>
                     <div
                     className="text-xs pt-6">

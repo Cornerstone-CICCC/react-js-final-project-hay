@@ -5,5 +5,7 @@ export interface Product{
     price:number,
     description:string,
     stock:number,
-    category:string
+    category:Category
 }
+
+export type Category="necklaces" |"earrings" |"rings" |"bracelets" |"ankle-wear"
