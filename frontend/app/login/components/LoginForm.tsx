@@ -1,16 +1,47 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { type SubmitEvent, useState } from 'react';
+import { type ChangeEvent, type SubmitEvent, useState } from 'react';
+import { GoEye, GoEyeClosed } from 'react-icons/go';
+import { useAuthStore } from '@/app/store/auth.store';
 
+type FormData = {
+  email: string;
+  password: string;
+};
 const LoginForm = () => {
-  const [emailInput, setEmailInput] = useState<string>('');
-  const [passwordInput, setPasswordInput] = useState<string>('');
-
+  const [formData, setFormData] = useState<FormData>({
+    email: '',
+    password: '',
+  });
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
   const router = useRouter();
+  const setLoggedIn = useAuthStore((s) => s.setLoggedIn);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormData((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  };
+
+  // Password Visible
+  const togglePasswordVisible = () => {
+    setIsPasswordVisible((current) => !current);
+  };
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitted(true);
+    setError('');
+
+    if (!formData.email.trim() || !formData.password.trim()) {
+      return;
+    }
 
     try {
       const res = await fetch('/api/login', {
@@ -20,20 +51,21 @@ const LoginForm = () => {
         },
         credentials: 'include',
         body: JSON.stringify({
-          email: emailInput,
-          password: passwordInput,
+          email: formData.email,
+          password: formData.password,
         }),
       });
-      const data = await res.json();
       if (!res.ok) {
-        console.error('Unable to log in');
+        setError('Your email or password does not match.');
         return;
       }
-      alert(data.message);
+      const data = await res.json();
+      setLoggedIn(true);
       router.push('/');
       router.refresh();
     } catch (err) {
       console.error(err);
+      setError('Something went wrong. Please try again.');
     }
   };
 
@@ -41,20 +73,32 @@ const LoginForm = () => {
     <form onSubmit={handleSubmit}>
       <input
         type="email"
-        value={emailInput}
-        onChange={(e) => setEmailInput(e.target.value)}
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
         className="border"
         placeholder="Enter your email..."
       />
+      {submitted && !formData.email.trim() && (
+        <p className="text-red-500">Please enter your email address.</p>
+      )}
       <div>
         <input
-          type="password"
-          value={passwordInput}
-          onChange={(e) => setPasswordInput(e.target.value)}
+          type={isPasswordVisible ? 'text' : 'password'}
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
           className="border"
           placeholder="Enter your password..."
         />
+        <button type="button" onClick={togglePasswordVisible}>
+          {isPasswordVisible ? <GoEye /> : <GoEyeClosed />}
+        </button>
       </div>
+      {submitted && !formData.password.trim() && (
+        <p className="text-red-500">Please enter your password.</p>
+      )}
+      <p className="text-red-500">{error}</p>
       <button type="submit">Sign In</button>
     </form>
   );

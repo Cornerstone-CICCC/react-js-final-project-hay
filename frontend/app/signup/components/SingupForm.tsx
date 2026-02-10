@@ -113,13 +113,12 @@ const SignupForm = () => {
           password: formData.password,
         }),
       });
-      const data = await res.json();
       if (!res.ok) {
         console.error('Unable to sign up');
         return;
       }
+      const data = await res.json();
       setLoggedIn(true);
-      alert(data.message);
       router.push('/');
       router.refresh();
     } catch (err) {
