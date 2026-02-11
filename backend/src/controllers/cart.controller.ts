@@ -23,6 +23,8 @@ const getAllCarts = async (req: Request, res: Response) => {
   }
 };
 
+//get a cart by id
+
 // Get cart by userId
 const getCartByUserId = async (req: Request<{ id: string }>, res: Response) => {
   try {

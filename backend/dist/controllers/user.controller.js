@@ -105,7 +105,7 @@ const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             password,
         });
         if (!newUser) {
-            res.status(500).json({
+            res.status(400).json({
                 message: "Unable to create User",
             });
             return;
@@ -118,6 +118,9 @@ const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // create a new cart
         const cart = yield cart_service_1.default.add(newUser.id);
+        // const userId = newUser.id
+        // const firstname = newUser.firstname
+        // const cartId = cart.id
         res.status(201).json({ newUser, cart });
     }
     catch (err) {
@@ -154,7 +157,10 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const wishlist = yield wishlist_service_1.default.getByUserId(foundUser.id);
         res.status(200).json({
             message: "Login successful",
-            foundUser,
+            user: {
+                userId: foundUser.id,
+                firstname: foundUser.firstname,
+            },
             cartItems,
             wishlist,
         });

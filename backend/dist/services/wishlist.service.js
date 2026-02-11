@@ -12,7 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const wishlist_model_1 = require("../models/wishlist.model");
 // Get all wishlist by userId
 const getByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield wishlist_model_1.Wishlist.find({ userId }).populate("productId");
+    const wishItems = yield wishlist_model_1.Wishlist.find({ userId })
+        .populate("productId", "image name price")
+        .select("-userId -createdAt -updatedAt -__v")
+        .lean();
+    return wishItems.map((item) => ({
+        wishlistId: item._id,
+        productId: item.productId._id,
+        image: item.productId.image,
+        name: item.productId.name,
+        price: item.productId.price,
+    }));
 });
 // Add item to wishlist
 const add = (newItem) => __awaiter(void 0, void 0, void 0, function* () {

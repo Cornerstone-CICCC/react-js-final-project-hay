@@ -20,7 +20,20 @@ const getUserCartWithItems = (userId) => __awaiter(void 0, void 0, void 0, funct
     const cart = yield cart_model_1.Cart.findOne({ userId, status: "active" });
     if (!cart)
         return [];
-    return yield cartItem_model_1.CartItem.find({ cartId: cart._id }).populate("productId");
+    const cartItems = yield cartItem_model_1.CartItem.find({ cartId: cart._id })
+        .populate("productId", "name price image stock")
+        .select("-__v -createdAt -updatedAt")
+        .lean();
+    return cartItems.map((item) => ({
+        cartItemId: item._id,
+        productId: item.productId._id,
+        image: item.productId.image,
+        name: item.productId.name,
+        price: item.productId.price,
+        stock: item.productId.stock,
+        cartId: item.cartId,
+        quantity: item.quantity,
+    }));
 });
 // create a cart
 const add = (userId) => __awaiter(void 0, void 0, void 0, function* () {

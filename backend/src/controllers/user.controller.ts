@@ -106,7 +106,7 @@ const addUser = async (req: Request<{}, {}, IUser>, res: Response) => {
     });
 
     if (!newUser) {
-      res.status(500).json({
+      res.status(400).json({
         message: "Unable to create User",
       });
       return;
@@ -122,6 +122,10 @@ const addUser = async (req: Request<{}, {}, IUser>, res: Response) => {
 
     // create a new cart
     const cart = await cartService.add(newUser.id);
+
+    // const userId = newUser.id
+    // const firstname = newUser.firstname
+    // const cartId = cart.id
 
     res.status(201).json({ newUser, cart });
   } catch (err) {
@@ -165,7 +169,10 @@ const login = async (req: Request<{}, {}, ILoginDTO>, res: Response) => {
 
     res.status(200).json({
       message: "Login successful",
-      foundUser,
+      user: {
+        userId: foundUser.id,
+        firstname: foundUser.firstname,
+      },
       cartItems,
       wishlist,
     });

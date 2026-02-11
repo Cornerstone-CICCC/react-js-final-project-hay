@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Cart } from "../models/cart.model";
 import { CartItem } from "../models/cartItem.model";
 
@@ -12,7 +13,34 @@ const getUserCartWithItems = async (userId: string) => {
 
   if (!cart) return [];
 
-  return await CartItem.find({ cartId: cart._id }).populate("productId");
+  const cartItems = await CartItem.find({ cartId: cart._id })
+    .populate("productId", "name price image stock")
+    .select("-__v -createdAt -updatedAt")
+    .lean<
+      {
+        _id: mongoose.Types.ObjectId;
+        productId: {
+          _id: mongoose.Types.ObjectId;
+          image: string;
+          name: string;
+          price: number;
+          stock: number;
+        };
+        cartId: mongoose.Types.ObjectId;
+        quantity: number;
+      }[]
+    >();
+
+  return cartItems.map((item) => ({
+    cartItemId: item._id,
+    productId: item.productId._id,
+    image: item.productId.image,
+    name: item.productId.name,
+    price: item.productId.price,
+    stock: item.productId.stock,
+    cartId: item.cartId,
+    quantity: item.quantity,
+  }));
 };
 
 // create a cart

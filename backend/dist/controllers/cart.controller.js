@@ -28,6 +28,7 @@ const getAllCarts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(500).json({ message: "Server error!" });
     }
 });
+//get a cart by id
 // Get cart by userId
 const getCartByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
