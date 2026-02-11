@@ -129,85 +129,112 @@ const SignupForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div>
+        <div className="mb-4">
+          <input
+            type="text"
+            name="firstname"
+            value={formData.firstname}
+            onChange={handleChange}
+            className="border border-slate-500 bg-slate-100 rounded-xl px-5 py-3 w-full outline-none"
+            placeholder="First name..."
+          />
+          {submitted && !formData.firstname.trim() && (
+            <p className="text-[#DA2929] text-sm mt-1">Please enter your first name.</p>
+          )}
+        </div>
+        <div className="mb-4">
+          <input
+            type="text"
+            name="lastname"
+            value={formData.lastname}
+            onChange={handleChange}
+            className="border border-slate-500 bg-slate-100 rounded-xl px-5 py-3 w-full outline-none"
+            placeholder="Last name..."
+          />
+          {submitted && !formData.lastname.trim() && (
+            <p className="text-[#DA2929] text-sm mt-1">Please enter your last name.</p>
+          )}
+        </div>
+      </div>
+      <div className="mb-4">
         <input
-          type="text"
-          name="firstname"
-          value={formData.firstname}
+          type="email"
+          name="email"
+          value={formData.email}
           onChange={handleChange}
-          className="border"
-          placeholder="First name..."
+          className="border border-slate-500 bg-slate-100 rounded-xl px-5 py-3 w-full outline-none"
+          placeholder="Enter your email..."
         />
-        {submitted && !formData.firstname.trim() && (
-          <p className="text-red-500">Please enter your first name.</p>
+        {submitted && !formData.email.trim() && (
+          <p className="text-[#DA2929] text-sm mt-1">Please enter your email address.</p>
         )}
-        <input
-          type="text"
-          name="lastname"
-          value={formData.lastname}
-          onChange={handleChange}
-          className="border"
-          placeholder="Last name..."
-        />
-        {submitted && !formData.lastname.trim() && (
-          <p className="text-red-500">Please enter your last name.</p>
+      </div>
+      <div className="mb-4">
+        <div className="flex border border-slate-500 bg-slate-100 rounded-xl">
+          <input
+            type={isPasswordVisible ? 'text' : 'password'}
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="px-5 py-3 w-full outline-none"
+            placeholder="Enter your password..."
+          />
+          <button
+            type="button"
+            className="min-w-[48] flex justify-center items-center"
+            onClick={togglePasswordVisible}
+          >
+            {isPasswordVisible ? <GoEye /> : <GoEyeClosed />}
+          </button>
+        </div>
+        {submitted && !formData.password.trim() && (
+          <p className="text-[#DA2929] text-sm mt-1">Please enter your password.</p>
+        )}
+        <p className="mt-2 text-sm">
+          Password strength:{' '}
+          <span
+            className={`${getScoreBg(passwordScore)} px-2 text-base/4 text-xs inline-block rounded-sm`}
+          >
+            {formData.password.trim() === '' ? '' : getScoreLabel(passwordScore)}
+          </span>
+        </p>
+        {submitted && formData.password.trim() && passwordScore < 3 && (
+          <p className="text-[#DA2929] text-sm mt-1">Please enter stronger password.</p>
         )}
       </div>
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        className="border"
-        placeholder="Enter your email..."
-      />
-      {submitted && !formData.email.trim() && (
-        <p className="text-red-500">Please enter your email address.</p>
-      )}
-      <div>
-        <input
-          type={isPasswordVisible ? 'text' : 'password'}
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          className="border"
-          placeholder="Enter your password..."
-        />
-        <button type="button" onClick={togglePasswordVisible}>
-          {isPasswordVisible ? <GoEye /> : <GoEyeClosed />}
-        </button>
+      <div className="mb-7">
+        <div className="flex border border-slate-500 bg-slate-100 rounded-xl">
+          <input
+            type={isConfirmVisible ? 'text' : 'password'}
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="px-5 py-3 w-full outline-none"
+            placeholder="Confirm your password..."
+          />
+          <button
+            type="button"
+            className="min-w-[48] flex justify-center items-center"
+            onClick={toggleConfirmVisible}
+          >
+            {isConfirmVisible ? <GoEye /> : <GoEyeClosed />}
+          </button>
+        </div>
+        {submitted && !formData.confirmPassword.trim() && (
+          <p className="text-[#DA2929] text-sm mt-1">Please enter your password again.</p>
+        )}
+        {submitted &&
+          formData.password.trim() &&
+          formData.password !== formData.confirmPassword && (
+            <p className="text-[#DA2929] text-sm mt-1">Passwords do not match.</p>
+          )}
       </div>
-      {submitted && !formData.password.trim() && (
-        <p className="text-red-500">Please enter your password.</p>
-      )}
-      {submitted && formData.password.trim() && passwordScore < 3 && (
-        <p className="text-red-500">Please enter stronger password.</p>
-      )}
-      <p>
-        Password strength:{' '}
-        <span className={getScoreBg(passwordScore)}>
-          {formData.password.trim() === '' ? '' : getScoreLabel(passwordScore)}
-        </span>
-      </p>
-      <div>
-        <input
-          type={isConfirmVisible ? 'text' : 'password'}
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          className="border"
-          placeholder="Confirm your password..."
-        />
-        <button type="button" onClick={toggleConfirmVisible}>
-          {isConfirmVisible ? <GoEye /> : <GoEyeClosed />}
-        </button>
-      </div>
-      {submitted && !formData.confirmPassword.trim() && (
-        <p className="text-red-500">Please enter your password again.</p>
-      )}
-      {submitted && formData.password.trim() && formData.password !== formData.confirmPassword && (
-        <p className="text-red-500">Passwords do not match.</p>
-      )}
-      <button type="submit">Create Account</button>
+      <button
+        type="submit"
+        className="bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl"
+      >
+        Create Account
+      </button>
     </form>
   );
 };

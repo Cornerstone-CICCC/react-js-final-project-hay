@@ -12,16 +12,23 @@ const page = async () => {
   }
 
   return (
-    <div>
-      <div>
-        <h1>Customer Login</h1>
-        <p>Sign in to your Shine Studio account</p>
+    <div className="pt-13 px-5 md:max-w-5xl md:mx-auto md:flex md:pt-30 md:justify-between md:gap-10 md:items-center">
+      <div className="md:w-1/2">
+        <h1 className="text-[#008FAB] font-bold text-3xl text-center mb-5 md:text-4xl">
+          Customer Login
+        </h1>
+        <p className="text-slate-500 text-base/5 text-center mb-7">
+          Sign in to your Shine Studio account
+        </p>
         <LoginForm />
-        <p>
-          Don't have an account?<Link href="/signup">Sign Up</Link>
+        <p className="mt-4 text-center">
+          Don't have an account?
+          <Link href="/signup" className="inline-block ml-2 text-[#008FAB]">
+            Sign Up
+          </Link>
         </p>
       </div>
-      <div>
+      <div className="hidden md:block">
         <Image src="/assets/user/login.jpg" alt="" width={444} height={592} />
       </div>
     </div>

@@ -71,35 +71,48 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        className="border"
-        placeholder="Enter your email..."
-      />
-      {submitted && !formData.email.trim() && (
-        <p className="text-red-500">Please enter your email address.</p>
-      )}
-      <div>
+      <div className="mb-4">
         <input
-          type={isPasswordVisible ? 'text' : 'password'}
-          name="password"
-          value={formData.password}
+          type="email"
+          name="email"
+          value={formData.email}
           onChange={handleChange}
-          className="border"
-          placeholder="Enter your password..."
+          className="border border-slate-500 bg-slate-100 rounded-xl px-5 py-3 w-full outline-none"
+          placeholder="Enter your email..."
         />
-        <button type="button" onClick={togglePasswordVisible}>
-          {isPasswordVisible ? <GoEye /> : <GoEyeClosed />}
-        </button>
+        {submitted && !formData.email.trim() && (
+          <p className="text-[#DA2929] text-sm mt-1">Please enter your email address.</p>
+        )}
       </div>
-      {submitted && !formData.password.trim() && (
-        <p className="text-red-500">Please enter your password.</p>
-      )}
-      <p className="text-red-500">{error}</p>
-      <button type="submit">Sign In</button>
+      <div className="mb-7">
+        <div className="flex border border-slate-500 bg-slate-100 rounded-xl">
+          <input
+            type={isPasswordVisible ? 'text' : 'password'}
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="px-5 py-3 w-full outline-none"
+            placeholder="Enter your password..."
+          />
+          <button
+            type="button"
+            className="min-w-[48] flex justify-center items-center"
+            onClick={togglePasswordVisible}
+          >
+            {isPasswordVisible ? <GoEye /> : <GoEyeClosed />}
+          </button>
+        </div>
+        {submitted && !formData.password.trim() && (
+          <p className="text-[#DA2929] text-sm mt-1">Please enter your password.</p>
+        )}
+      </div>
+      <p className="text-[#DA2929] text-sm mb-2">{error}</p>
+      <button
+        type="submit"
+        className="bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl"
+      >
+        Sign In
+      </button>
     </form>
   );
 };

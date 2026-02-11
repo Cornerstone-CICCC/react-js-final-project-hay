@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${nunitoSans.className} antialiased`}>
         <Header />
-        <main className="pb-15">{children}</main>
+        <main className="pb-16 md:pb-32">{children}</main>
         <Footer />
       </body>
     </html>
