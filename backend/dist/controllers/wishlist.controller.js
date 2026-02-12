@@ -13,6 +13,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const wishlist_service_1 = __importDefault(require("../services/wishlist.service"));
+// Get all wishitems
+const getAllItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const items = yield wishlist_service_1.default.getAll();
+        res.status(200).json(items);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 // Get wishlist by userId
 const getAllWishlist = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -56,8 +67,22 @@ const deleteWishItem = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(500).json({ message: "Server error" });
     }
 });
+const numberProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield wishlist_service_1.default.getNumProduct(req.params.id);
+        res.status(200).json({
+            result,
+        });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 exports.default = {
+    getAllItems,
     getAllWishlist,
     addWishItem,
     deleteWishItem,
+    numberProduct,
 };

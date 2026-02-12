@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleSocketEvents = void 0;
+const wishlist_service_1 = __importDefault(require("../services/wishlist.service"));
 const shopProductUser = [];
 const handleSocketEvents = (io, socket) => {
     console.log(`User connected: ${socket.id}`);
@@ -19,61 +23,61 @@ const handleSocketEvents = (io, socket) => {
     socket.on("shopProduct", (data) => __awaiter(void 0, void 0, void 0, function* () {
         const { productId, userId } = data;
         // see if the same user watching the same product existed already in the array
-        const checkUser = shopProductUser.find((p) => p.productId === productId &&
-            p.userId === userId &&
-            p.socketId === socket.id);
+        const checkUser = shopProductUser.find((p) => p.productId === productId && p.socketId === socket.id);
         // if that exists, return
         if (checkUser)
             return;
         // add the shopper into the array
         shopProductUser.push({ productId, userId, socketId: socket.id });
-        const countShopper = shopProductUser.filter((shop) => shop.productId === productId).length;
-        console.log({ productId, count: countShopper });
-        io.emit("currentShoppers", { productId, count: countShopper });
+        emitCurrentCount(io, productId);
     }));
     // when the user leave
     // 1. productId
-    // 2. userId
     socket.on("leaveProduct", (data) => __awaiter(void 0, void 0, void 0, function* () {
-        const { productId, userId } = data;
-        // see if the array has the specific user
-        const checkUser = shopProductUser.find((p) => p.productId === productId &&
-            p.userId === userId &&
-            p.socketId === socket.id);
-        // if the array doesn't have
-        if (!checkUser)
-            return;
-        const index = shopProductUser.findIndex((shop) => shop.productId === productId &&
-            shop.userId === userId &&
-            shop.socketId === socket.id);
-        if (index !== -1) {
-            shopProductUser.splice(index, 1);
+        const { productId } = data;
+        //remove users from shopUser by socket id
+        for (let i = shopProductUser.length - 1; i >= 0; i--) {
+            if (shopProductUser[i].productId === productId &&
+                shopProductUser[i].socketId === socket.id) {
+                shopProductUser.splice(i, 1);
+            }
         }
-        const countShopper = shopProductUser.filter((p) => p.productId === productId).length;
-        console.log("currentShoppers", { productId, count: countShopper });
-        io.emit("currentShoppers", { productId, count: countShopper });
+        emitCurrentCount(io, productId);
+    }));
+    // trending item - when client sends the wishlist add/remove request
+    // 1. productId
+    socket.on("updateWish", (data) => __awaiter(void 0, void 0, void 0, function* () {
+        const { productId } = data;
+        const results = yield wishlist_service_1.default.getNumProduct(productId);
+        io.emit("ProductNumAndDetail", { productId, results });
     }));
     // remove the user from the array whne they disconnect
     socket.on("disconnect", () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(`User disconnected: ${socket.id}`);
         // find all products this socket was watching
-        const productsWatching = shopProductUser.filter((p) => p.socketId === socket.id);
+        const productsWatching = shopProductUser
+            .filter((p) => p.socketId === socket.id)
+            .map((p) => p.productId);
         if (productsWatching.length === 0)
             return;
-        productsWatching.forEach(({ productId }) => {
-            // remove all entries of this socketId for this product
-            for (let i = shopProductUser.length - 1; i >= 0; i--) {
-                if (shopProductUser[i].socketId === socket.id &&
-                    shopProductUser[i].productId === productId) {
-                    shopProductUser.splice(i, 1);
-                }
+        // remove all entries of this socketId for this product
+        for (let i = shopProductUser.length - 1; i >= 0; i--) {
+            if (shopProductUser[i].socketId === socket.id) {
+                shopProductUser.splice(i, 1);
             }
-            // count current shoppers for this product
-            const countShopper = shopProductUser.filter((p) => p.productId === productId).length;
-            console.log("currentShoppers", { productId, count: countShopper });
-            // emit the updated count to all clients
-            io.emit("currentShoppers", { productId, count: countShopper });
+        }
+        // calculate the number of current user
+        const uniqueProducts = [...new Set(productsWatching)];
+        uniqueProducts.forEach((productId) => {
+            emitCurrentCount(io, productId);
         });
     }));
 };
 exports.handleSocketEvents = handleSocketEvents;
+function emitCurrentCount(io, productId) {
+    const countShopper = new Set(shopProductUser
+        .filter((shop) => shop.productId === productId)
+        .map((p) => p.userId)).size;
+    console.log({ productId, count: countShopper });
+    io.emit("currentShoppers", { productId, count: countShopper });
+}
