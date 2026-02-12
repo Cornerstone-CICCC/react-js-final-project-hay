@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { Italiana, Julius_Sans_One, Nunito_Sans } from 'next/font/google';
 import './globals.css';
 // import SocketApp from './socketApp';
+import './globals.css';
+import Footer from './components/Footer';
+import Header from './components/Header/Header';
 
 const nunitoSans = Nunito_Sans({
   variable: '--font-nunito-sans',
@@ -32,8 +35,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunitoSans.className} antialiased`}>{children}</body>
       {/* <SocketApp/> */}
+      <body className={`${nunitoSans.className} antialiased`}>
+        <Header />
+        <main className="pb-16 md:pb-32">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }
