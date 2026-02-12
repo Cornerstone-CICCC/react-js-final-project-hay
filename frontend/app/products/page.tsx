@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Image from 'next/image';
 import { juliusSansOne } from '../layout';
 import ProductList from './components/ProductList';
@@ -34,10 +33,4 @@ const page = () => {
   );
 };
 
-=======
-const page = () => {
-  return <div></div>;
-};
-
->>>>>>> 36b35ce0b3787adb53f9d03bf6b753140157c78b
 export default page;
