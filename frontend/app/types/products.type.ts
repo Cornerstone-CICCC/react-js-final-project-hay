@@ -1,11 +1,12 @@
-export interface Product{
-    _id:string,
-    name:string,
-    image:string,
-    price:number,
-    description:string,
-    stock:number,
-    category:Category
+export interface Product {
+  _id: string;
+  name: string;
+  image: string;
+  price: number;
+  description: string;
+  stock: number;
+  category: Category;
 }
 
-export type Category="necklaces" |"earrings" |"rings" |"bracelets" |"ankle-wear"
+export type Availability = 'in-stock' | 'out-stock'
+export type Category = 'necklaces' | 'earrings' | 'rings' | 'bracelets' | 'ankle-wear';
