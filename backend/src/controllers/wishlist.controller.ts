@@ -1,6 +1,17 @@
 import { Request, Response } from "express";
 import wishlistService, { WishlistDTO } from "../services/wishlist.service";
 
+// Get all wishitems
+const getAllItems = async (req: Request, res: Response) => {
+  try {
+    const items = await wishlistService.getAll();
+    res.status(200).json(items);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // Get wishlist by userId
 const getAllWishlist = async (req: Request<{ id: string }>, res: Response) => {
   try {
@@ -45,8 +56,22 @@ const deleteWishItem = async (req: Request<{ id: string }>, res: Response) => {
   }
 };
 
+const numberProduct = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const result = await wishlistService.getNumProduct(req.params.id);
+    res.status(200).json({
+      result,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 export default {
+  getAllItems,
   getAllWishlist,
   addWishItem,
   deleteWishItem,
+  numberProduct,
 };

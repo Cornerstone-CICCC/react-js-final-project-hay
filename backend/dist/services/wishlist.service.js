@@ -10,6 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const wishlist_model_1 = require("../models/wishlist.model");
+const product_model_1 = require("../models/product.model");
+// Get all wish items
+const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield wishlist_model_1.Wishlist.find();
+});
 // Get all wishlist by userId
 const getByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const wishItems = yield wishlist_model_1.Wishlist.find({ userId })
@@ -24,6 +29,15 @@ const getByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
         price: item.productId.price,
     }));
 });
+// Get the number of product by productId and product detail
+const getNumProduct = (productId) => __awaiter(void 0, void 0, void 0, function* () {
+    const productNum = yield wishlist_model_1.Wishlist.countDocuments({ productId });
+    const productDetail = yield product_model_1.Product.findById(productId).select("-userId -createdAt -updatedAt -__v");
+    return {
+        productNum,
+        productDetail,
+    };
+});
 // Add item to wishlist
 const add = (newItem) => __awaiter(void 0, void 0, void 0, function* () {
     return yield wishlist_model_1.Wishlist.create(newItem);
@@ -33,7 +47,9 @@ const remove = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return yield wishlist_model_1.Wishlist.findByIdAndDelete(id);
 });
 exports.default = {
+    getAll,
     getByUserId,
+    getNumProduct,
     add,
     remove,
 };

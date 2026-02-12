@@ -1,10 +1,16 @@
 import mongoose from "mongoose";
 import { Wishlist } from "../models/wishlist.model";
+import { Product } from "../models/product.model";
 
 export interface WishlistDTO {
   userId: string;
   productId: string;
 }
+
+// Get all wish items
+const getAll = async () => {
+  return await Wishlist.find();
+};
 
 // Get all wishlist by userId
 const getByUserId = async (userId: string) => {
@@ -32,6 +38,20 @@ const getByUserId = async (userId: string) => {
   }));
 };
 
+// Get the number of product by productId and product detail
+const getNumProduct = async (productId: string) => {
+  const productNum = await Wishlist.countDocuments({ productId });
+
+  const productDetail = await Product.findById(productId).select(
+    "-userId -createdAt -updatedAt -__v",
+  );
+
+  return {
+    productNum,
+    productDetail,
+  };
+};
+
 // Add item to wishlist
 const add = async (newItem: WishlistDTO) => {
   return await Wishlist.create(newItem);
@@ -43,7 +63,9 @@ const remove = async (id: string) => {
 };
 
 export default {
+  getAll,
   getByUserId,
+  getNumProduct,
   add,
   remove,
 };
