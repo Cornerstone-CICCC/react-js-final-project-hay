@@ -33,7 +33,7 @@ const ItemCard = ({ product }: Props) => {
         </div>
       )}
       <Image
-        src={product.image}
+        src={`/assets/shine_studio_images/${product.image}`}
         width={250}
         height={250}
         alt={`${product.name.slice(0, 10)}`}

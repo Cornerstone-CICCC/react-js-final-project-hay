@@ -11,8 +11,12 @@ export interface FilterQuery {
   category: Category[];
 }
 
-const ProductList = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+type Props={
+  data:Product[]
+}
+
+const ProductList = ({data}:Props) => {
+  const [products, setProducts] = useState<Product[]>(data);
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false);
   const [query, setQuery] = useState<FilterQuery | null>(null);
 
@@ -25,15 +29,6 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    console.log(query);
-    //setting up dummy data
-    for (let i = 0; i < 20; i++) {
-      const newProduct = {
-        _id: `${i + 1}`,
-        ...product,
-      };
-      setProducts((prev) => [...prev, newProduct]);
-    }
 
     if (query) {
       setProducts((prev) =>

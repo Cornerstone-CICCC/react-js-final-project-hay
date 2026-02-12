@@ -1,13 +1,24 @@
 import Image from 'next/image';
 import { juliusSansOne } from '../layout';
 import ProductList from './components/ProductList';
+import { Product } from '../types/products.type';
 
-const page = () => {
+const page =async () => {
   const image = '/assets/products/products_headPic.svg';
   const headtext = 'Designer Bracelet Collection';
   const subtext = `Our latest collection of designer bracelets, 
   where artistry meets elegance. Each bracelet is a testament to exquisite craftsmanship, featuring unique designs that elevate any look. From bold statement pieces to delicate charms, 
   our collection caters to every style and occasion.`;
+  let data:Product[]
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/products`)
+  
+  if(!res.ok){
+    console.log("Error fetching data")
+    data=[]
+  }
+   data = await res.json()
+
 
   return (
     <div className="max-w-[2000px] mx-auto">
@@ -28,7 +39,7 @@ const page = () => {
         </div>
       </div>
 
-      <ProductList />
+      <ProductList data={data}/>
     </div>
   );
 };
