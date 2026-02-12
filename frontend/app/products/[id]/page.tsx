@@ -13,6 +13,9 @@ type Props = {
 const page = async ({ params }: Props) => {
   const { id } = await params;
 
+  const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/products/`)
+
+
   //dummy -> change to fetch by id
   const item = {
     _id: id,
