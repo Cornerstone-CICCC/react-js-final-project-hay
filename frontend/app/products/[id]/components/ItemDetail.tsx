@@ -4,19 +4,25 @@ import { useEffect, useState } from 'react';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
 import { PiHeartThin } from 'react-icons/pi';
 import type { Product } from '@/app/types/products.type';
+import { socket } from '@/app/socket';
 
 type Props = {
   product: Product;
 };
 
 const ItemDetail = ({ product }: Props) => {
+
   const [quantity, setQuantity] = useState<number>(1);
-  const [isStock, setIsStock] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [isInBag, setIsInBag] = useState(false);
 
   useEffect(() => {
     //set liked and in bag
+    const socketData = {
+      productId:product._id,
+      userId:"1"
+    }
+    socket.emit('shopProduct',(socketData))
   }, []);
 
   return (
@@ -44,7 +50,7 @@ const ItemDetail = ({ product }: Props) => {
               <span className="text-xs font-medium">(Incl. taxes and charges)</span>
             </div>
 
-            {isStock ? (
+            {product.stock > 0 ? (
               <div className="flex items-center gap-2">
                 <IoIosCheckmarkCircleOutline className="text-[#2DC84A] text-[18px]" />
                 In stock - ready to ship
@@ -57,7 +63,7 @@ const ItemDetail = ({ product }: Props) => {
           <div className="text-[#008FAB] flex gap-4 text-[16px] font-semibold">
             <div className="flex items-center border border-[#008FAB]">
               <button
-              type='button'
+                type="button"
                 className="px-6 py-2 cursor-pointer"
                 onClick={() =>
                   setQuantity((prev) => {
@@ -70,7 +76,7 @@ const ItemDetail = ({ product }: Props) => {
               </button>
               <div>{quantity}</div>
               <button
-              type='button'
+                type="button"
                 className="px-6 py-2 cursor-pointer"
                 onClick={() => setQuantity((prev) => prev + 1)}
               >

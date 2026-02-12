@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req:NextRequest) {
+export async function POST(req: NextRequest) {
   const body = await req.text();
-  const event = JSON.parse(body); 
+  const event = JSON.parse(body);
 
   if (event.type === 'checkout.session.completed') {
     console.log('Payment successful');
   }
 
-  return NextResponse.json({ message: 'Received' }, { status: 200 })
+  return NextResponse.json({ message: 'Received' }, { status: 200 });
 }

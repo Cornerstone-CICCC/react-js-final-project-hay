@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import Instruction from '../components/policy/Instruction';
+import Image from 'next/image'; 
 import { juliusSansOne } from '../layout';
 import ProductList from './components/ProductList';
 
@@ -11,7 +10,7 @@ const page = () => {
   our collection caters to every style and occasion.`;
 
   return (
-    <div className="max-w-[2000px]">
+    <div className="max-w-[2000px] mx-auto">
       <div className="relative">
         <Image
           src={image}

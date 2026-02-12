@@ -4,18 +4,14 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const OrderSummary = () => {
-  const [total, setTotal] = useState<number>(0)
-  const [subtotal, setSubTotal] = useState<number>(0)
+  const [total, setTotal] = useState<number>(0);
+  const [subtotal, setSubTotal] = useState<number>(0);
 
   //calculate total from store
-  useEffect(()=>{
-
-  },[])
+  useEffect(() => {}, []);
 
   //send finalized cart to backend after checkout
-  const handleCheckout =()=>{
-
-  }
+  const handleCheckout = () => {};
 
   return (
     <div className="p-4 flex flex-col gap-4 justify-center">
@@ -37,9 +33,11 @@ const OrderSummary = () => {
         <span>$ {total}</span>
       </div>
 
-      <Link href="/checkout" 
-      className="bg-[#008FAB] text-white text-center mt-3 px-6 py-2 rounded-xl"
-      onClick={handleCheckout}>
+      <Link
+        href="/checkout"
+        className="bg-[#008FAB] text-white text-center mt-3 px-6 py-2 rounded-xl"
+        onClick={handleCheckout}
+      >
         Proceed to Checkout
       </Link>
       <div className="text-xs md:text-sm">

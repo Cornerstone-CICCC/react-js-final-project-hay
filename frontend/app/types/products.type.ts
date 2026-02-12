@@ -8,5 +8,5 @@ export interface Product {
   category: Category;
 }
 
-export type Availability = 'in-stock' | 'out-stock'
+export type Availability = 'in-stock' | 'out-stock';
 export type Category = 'necklaces' | 'earrings' | 'rings' | 'bracelets' | 'ankle-wear';

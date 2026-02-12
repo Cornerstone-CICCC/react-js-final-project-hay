@@ -15,6 +15,7 @@ const ItemCard = ({ product }: Props) => {
   const [isInBag, setIsInBag] = useState(false);
   //should have isInCart and isInWishlist to
   const handleToggleCart = () => {
+    if (product.stock === 0) return;
     setIsInBag((prev) => !prev);
   };
   const handleToggleWishList = () => {
@@ -25,7 +26,12 @@ const ItemCard = ({ product }: Props) => {
     router.push(`/products/${product._id}`);
   };
   return (
-    <div className="w-fit justify-self-center py-6">
+    <div className="w-fit justify-self-center py-6 relative">
+      {product.stock == 0 && (
+        <div className="bg-black/30 absolute top-0 w-full h-full flex justify-center items-center">
+          <div className="font-bold text-white text-xl">Out of Stock</div>
+        </div>
+      )}
       <Image
         src={product.image}
         width={250}

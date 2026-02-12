@@ -18,7 +18,7 @@ const Wrapping = () => {
     <div className="py-16 px-5 flex flex-col gap-12 max-w-[1100px] mx-auto">
       {contents.map((item, i) => (
         <div
-          key={i}
+          key={`wrap-${i}`}
           className={`flex items-center gap-6 justify-center ${i % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
         >
           <Image
