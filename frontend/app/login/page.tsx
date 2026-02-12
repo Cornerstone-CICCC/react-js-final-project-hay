@@ -1,18 +1,24 @@
-import { cookies } from 'next/headers';
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useAuthStore } from '../store/auth.store';
 import LoginForm from './components/LoginForm';
 
-const page = async () => {
-  const cookieStore = await cookies();
-  const session = cookieStore.get('session')?.value; // cookie session name
-  if (session) {
-    redirect('/');
-  }
+const page = () => {
+  const user = useAuthStore((s) => s.user);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   return (
-    <div className="pt-13 px-5 md:max-w-5xl md:mx-auto md:flex md:pt-30 md:justify-between md:gap-10 md:items-center">
+    <div className="pt-13 px-5 md:max-w-5xl md:mx-auto md:flex md:pt-26 md:justify-between md:gap-10 md:items-center">
       <div className="md:w-1/2">
         <h1 className="text-[#008FAB] font-bold text-3xl text-center mb-5 md:text-4xl">
           Customer Login

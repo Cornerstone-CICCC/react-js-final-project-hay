@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { type ChangeEvent, type SubmitEvent, useState } from 'react';
 import { GoEye, GoEyeClosed } from 'react-icons/go';
 import { useAuthStore } from '@/app/store/auth.store';
+import { useCartStore } from '@/app/store/cart.store';
+import { useWishlistStore } from '@/app/store/wishlist.store';
 
 type FormData = {
   email: string;
@@ -18,7 +20,10 @@ const LoginForm = () => {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const router = useRouter();
-  const setLoggedIn = useAuthStore((s) => s.setLoggedIn);
+
+  const setUser = useAuthStore((s) => s.setUser);
+  const setCart = useCartStore((s) => s.setCart);
+  const setWishlist = useWishlistStore((s) => s.setWishlist);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,12 +60,15 @@ const LoginForm = () => {
           password: formData.password,
         }),
       });
+      const data = await res.json();
       if (!res.ok) {
-        setError('Your email or password does not match.');
+        setError(data.message || 'Your email or password does not match.');
         return;
       }
-      const data = await res.json();
-      setLoggedIn(true);
+      setUser(data.user);
+      setCart(data.cartItems);
+      setWishlist(data.wishlist);
+
       router.push('/');
       router.refresh();
     } catch (err) {
@@ -109,7 +117,7 @@ const LoginForm = () => {
       <p className="text-[#DA2929] text-sm mb-2">{error}</p>
       <button
         type="submit"
-        className="bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl"
+        className="bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
       >
         Sign In
       </button>

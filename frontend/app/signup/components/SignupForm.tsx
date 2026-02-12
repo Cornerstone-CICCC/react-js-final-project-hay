@@ -231,7 +231,7 @@ const SignupForm = () => {
       </div>
       <button
         type="submit"
-        className="bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl"
+        className="bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
       >
         Create Account
       </button>
