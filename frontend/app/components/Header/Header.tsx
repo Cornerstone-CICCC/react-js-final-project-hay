@@ -98,7 +98,7 @@ const Header = () => {
             <span className="absolute top-[-6px] left-[17px] text-[10px] font-semibold text-[#008FAB]">
               {totalCartNum}
             </span>
-            <Link href="/cart" onMouseOver={handleCartOpen} onFocus={handleCartOpen}>
+            <Link href="/shopping-bag" onMouseOver={handleCartOpen} onFocus={handleCartOpen}>
               <SlHandbag />
             </Link>
           </li>

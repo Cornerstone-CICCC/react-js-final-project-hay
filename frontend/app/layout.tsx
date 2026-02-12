@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
-import { Julius_Sans_One, Nunito_Sans } from 'next/font/google';
+import { Italiana, Julius_Sans_One, Nunito_Sans } from 'next/font/google';
+import './globals.css';
+// import SocketApp from './socketApp';
 import './globals.css';
 import Footer from './components/Footer';
 import Header from './components/Header/Header';
@@ -9,8 +11,14 @@ const nunitoSans = Nunito_Sans({
   subsets: ['latin'],
 });
 
-const juliusSansOne = Julius_Sans_One({
+export const juliusSansOne = Julius_Sans_One({
   variable: '--font-julius-sans-one',
+  weight: '400',
+  subsets: ['latin'],
+});
+
+export const italiana = Italiana({
+  variable: '--font-italiana',
   weight: '400',
   subsets: ['latin'],
 });
@@ -27,6 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* <SocketApp/> */}
       <body className={`${nunitoSans.className} antialiased`}>
         <Header />
         <main className="pb-16 md:pb-32">{children}</main>

@@ -15,19 +15,19 @@ const TrendingList = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    // connect Socket.IO server
-    const socket = io('http://localhost:3000');
-    // receive trending items
-    socket.on('trendingItems', (data: Product[]) => {
-      setProducts(data);
-      setLoading(false);
-    });
-    return () => {
-      // clean up
-      socket.disconnect();
-    };
-  }, []);
+  // useEffect(() => {
+  //   // connect Socket.IO server
+  //   const socket = io('http://localhost:3000');
+  //   // receive trending items
+  //   socket.on('trendingItems', (data: Product[]) => {
+  //     setProducts(data);
+  //     setLoading(false);
+  //   });
+  //   return () => {
+  //     // clean up
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   if (loading) {
     return <p>Loading trending items...</p>;
