@@ -33,20 +33,20 @@ const CartModal = ({ isOpen, onClose }: Props) => {
     <div
       className={
         isOpen
-          ? 'fixed top-0 right-0 w-full h-full transform-[translateX(0)] bg-[#22222299] transition hidden md:block'
-          : 'fixed top-0 right-0 w-full h-full transform-[translateX(100vw)] transition hidden md:block'
+          ? 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(0)] bg-[#22222299] transition hidden md:block'
+          : 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(100vw)] transition hidden md:block'
       }
     >
       <div className="max-w-5xl mx-auto w-full h-full relative">
-        <button
-          type="button"
-          className="text-[40px] cursor-pointer absolute top-[115px] right-[575px] text-white mr-[10px]"
-          onClick={onClose}
-        >
-          <IoCloseOutline />
-        </button>
         <div className="bg-white absolute top-[115px] right-0">
           <div className="w-[575] bg-[#E9F4F34D] px-13 pt-8 pb-13">
+            <button
+              type="button"
+              className="text-[30px] cursor-pointer absolute top-[18px] right-[18px]"
+              onClick={onClose}
+            >
+              <IoCloseOutline />
+            </button>
             <p className="text-center font-semibold text-2xl">
               Your Bag <span className="text-[#008FAB]">({totalCartNum})</span>
             </p>
