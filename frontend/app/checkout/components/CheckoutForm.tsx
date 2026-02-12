@@ -50,7 +50,7 @@ const PaymentForm = () => {
       <PaymentElement id="payment-element" />
       <div className="py-15 px-6 flex justify-center">
         <button
-          type='submit'
+          type="submit"
           className="w-fit px-15 py-3 bg-[#008FAB] rounded-2xl text-white text-lg cursor-pointer"
           disabled={isLoading || !stripe || !elements}
           id="submit"

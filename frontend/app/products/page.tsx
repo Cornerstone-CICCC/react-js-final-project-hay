@@ -1,4 +1,4 @@
-import Image from 'next/image'; 
+import Image from 'next/image';
 import { juliusSansOne } from '../layout';
 import ProductList from './components/ProductList';
 

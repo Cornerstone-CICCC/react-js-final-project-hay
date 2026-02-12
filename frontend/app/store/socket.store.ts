@@ -1,25 +1,28 @@
-import {create} from 'zustand'
-import {io, Socket} from 'socket.io-client'
-import { persist } from 'zustand/middleware'
+import { io, type Socket } from 'socket.io-client';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-let socket:Socket | null = null
-const URL = process.env.NEXT_PUBLIC_ENDPOINT
+let socket: Socket | null = null;
+const URL = process.env.NEXT_PUBLIC_ENDPOINT;
 
-interface SocketStoreType{
-    socket:Socket| null,
-    isConnected:boolean,
-    shopperCounter:number|null,
-    initializeSocket:()=>void,
-    disconnectSocket:()=>void,
-    watchingItem:(data:{productId:string, userId:string})=>void
+interface SocketStoreType {
+  socket: Socket | null;
+  isConnected: boolean;
+  shopperCounter: number | null;
+  initializeSocket: () => void;
+  disconnect: () => void;
+  joinItem: (data: { productId: string; userId: string }) => void;
+  leaveItem: (data: { productId: string; userId: string }) => void;
+  currentProductId: string | null;
 }
 
 const useSocketStore = create<SocketStoreType>()(
   persist(
     (set, get) => ({
-      shopperCounter:null,
+      shopperCounter: null,
       socket: null,
       isConnected: false,
+      currentProductId: null,
 
       // Initialize socket connection
       initializeSocket: () => {
@@ -40,16 +43,16 @@ const useSocketStore = create<SocketStoreType>()(
         });
 
         // Listen for cart updates from other clients/sessions
-        socket.on('currentShoppers', (data:{ productId:string, count: number }) => {
+        socket.on('currentShoppers', (data: { productId: string; count: number }) => {
           console.log(data);
-          set({shopperCounter:data.count})
+          set({ shopperCounter: data.count });
         });
 
         set({ socket });
       },
 
       // Disconnect socket
-      disconnectSocket: () => {
+      disconnect: () => {
         if (socket) {
           socket.disconnect();
           socket = null;
@@ -57,25 +60,46 @@ const useSocketStore = create<SocketStoreType>()(
         }
       },
 
-
       // Emit when enter product page
-      watchingItem: (data:{
-        productId:string,
-        userId:string
-      }) => {
-        const socketInstance = get().socket;
-        if (socketInstance && socketInstance.connected) {
-          socketInstance.emit('shopProduct', data);
-        } else {
-          console.warn('Socket not connected');
+      joinItem: (data: { productId: string; userId: string }) => {
+        const { socket, currentProductId } = get();
+
+        if (!socket) {
+          console.warn('Socket not initialized');
+          return;
         }
+
+        // Leave previous product if it's different
+        if (currentProductId && currentProductId !== data.productId) {
+          socket.emit('leaveProduct', {
+            productId: currentProductId,
+            userId: data.userId,
+          });
+          console.log(`Left previous product: ${currentProductId}`);
+        }
+
+        // Join new product
+        socket.emit('shopProduct', data);
+        set({ currentProductId: data.productId });
+        console.log(`Joined product: ${data.productId}`);
       },
 
+      leaveItem: (data: { productId: string; userId: string }) => {
+        const { socket } = get();
+        if (!socket) {
+          console.log('there is no socket');
+          return;
+        }
+
+        socket.emit('leaveProduct', data);
+
+        set({ shopperCounter: null });
+      },
     }),
     {
       name: 'socket-storage',
-    }
-  )
+    },
+  ),
 );
 
 export default useSocketStore;

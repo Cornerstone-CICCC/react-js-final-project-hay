@@ -47,6 +47,15 @@ const ProductList = () => {
         ),
       );
     }
+
+    //filter out with product name
+    // if(term){
+    //   setProducts(prev=>
+    //     prev.fill(
+    //       (item) =>
+
+    //     )
+    // }
   }, [query]);
 
   return (

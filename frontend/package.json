@@ -10,10 +10,7 @@
     "fix": "npx @biomejs/biome check --write"
   },
   "lint-staged": {
-    "*.{js,ts,jsx,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{js,ts,jsx,tsx}": ["eslint --fix", "prettier --write"]
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^5.6.0",

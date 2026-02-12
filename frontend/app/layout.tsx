@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Italiana, Julius_Sans_One, Nunito_Sans } from 'next/font/google';
 import './globals.css';
+// import SocketApp from './socketApp';
 
 const nunitoSans = Nunito_Sans({
   variable: '--font-nunito-sans',
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunitoSans.className} antialiased`}>{children}</body>
+      {/* <SocketApp/> */}
     </html>
   );
 }

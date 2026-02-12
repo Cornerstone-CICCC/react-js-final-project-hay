@@ -3,14 +3,15 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
 import { PiHeartThin } from 'react-icons/pi';
+import useSocketStore from '@/app/store/socket.store';
 import type { Product } from '@/app/types/products.type';
-import { socket } from '@/app/socket';
 
 type Props = {
   product: Product;
 };
 
 const ItemDetail = ({ product }: Props) => {
+  const { joinItem, leaveItem, shopperCounter } = useSocketStore();
 
   const [quantity, setQuantity] = useState<number>(1);
   const [isLiked, setIsLiked] = useState(false);
@@ -19,10 +20,31 @@ const ItemDetail = ({ product }: Props) => {
   useEffect(() => {
     //set liked and in bag
     const socketData = {
-      productId:product._id,
-      userId:"1"
-    }
-    socket.emit('shopProduct',(socketData))
+      productId: product._id,
+      userId: '1',
+    };
+
+    joinItem(socketData);
+
+    const handleChange = () => {
+      if (document.hidden) {
+        leaveItem(socketData);
+      } else {
+        joinItem(socketData);
+      }
+    };
+
+    const handleBeforeUnload = () => {
+      leaveItem(socketData);
+    };
+    document.addEventListener('handleChange', handleChange);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      leaveItem(socketData);
+      document.removeEventListener('handleChange', handleChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   return (
