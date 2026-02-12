@@ -5,6 +5,8 @@ import { type ChangeEvent, type SubmitEvent, useEffect, useState } from 'react';
 import { GoEye, GoEyeClosed } from 'react-icons/go';
 import zxcvbn from 'zxcvbn';
 import { useAuthStore } from '@/app/store/auth.store';
+import { useCartStore } from '@/app/store/cart.store';
+import { useWishlistStore } from '@/app/store/wishlist.store';
 
 type FormData = {
   firstname: string;
@@ -27,7 +29,10 @@ const SignupForm = () => {
   const [passwordScore, setPasswordScore] = useState<number>(0);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const router = useRouter();
-  const setLoggedIn = useAuthStore((s) => s.setLoggedIn);
+
+  const setUser = useAuthStore((s) => s.setUser);
+  const setCart = useCartStore((s) => s.setCart);
+  const setWishlist = useWishlistStore((s) => s.setWishlist);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -113,12 +118,19 @@ const SignupForm = () => {
           password: formData.password,
         }),
       });
+      const data = await res.json();
       if (!res.ok) {
-        console.error('Unable to sign up');
+        console.error(data.message || 'Unable to sign up');
         return;
       }
-      const data = await res.json();
-      setLoggedIn(true);
+
+      setUser({
+        id: data.newUser._id,
+        firstname: data.newUser.firstname,
+      });
+      setCart([]);
+      setWishlist([]);
+
       router.push('/');
       router.refresh();
     } catch (err) {

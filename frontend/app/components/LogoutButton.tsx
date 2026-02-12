@@ -3,9 +3,15 @@
 import { useRouter } from 'next/navigation';
 import { TbLogout } from 'react-icons/tb';
 import { useAuthStore } from '../store/auth.store';
+import { useCartStore } from '../store/cart.store';
+import { useSearchTermStore } from '../store/searchTerm.store';
+import { useWishlistStore } from '../store/wishlist.store';
 
 const LogoutButton = () => {
-  const setLoggedIn = useAuthStore((s) => s.setLoggedIn);
+  const logout = useAuthStore((s) => s.logout);
+  const setSearchTerm = useSearchTermStore((s) => s.setSearchTerm);
+  const clearCart = useCartStore((s) => s.clearCart);
+  const clearWishlist = useWishlistStore((s) => s.clearWishlist);
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -14,9 +20,17 @@ const LogoutButton = () => {
         method: 'POST',
         credentials: 'include',
       });
-      setLoggedIn(false);
+
+      if (!res.ok) {
+        throw new Error('Logout Failed');
+      }
+
+      logout();
+      setSearchTerm('');
+      clearCart();
+      clearWishlist();
+
       router.push('/login');
-      router.refresh();
     } catch (err) {
       console.error('Logout error:', err);
     }

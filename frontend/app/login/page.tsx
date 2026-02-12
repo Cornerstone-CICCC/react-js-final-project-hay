@@ -18,7 +18,7 @@ const page = () => {
   }, [user, router]);
 
   return (
-    <div className="pt-13 px-5 md:max-w-5xl md:mx-auto md:flex md:pt-26 md:justify-between md:gap-10 md:items-center">
+    <div className="pt-13 px-5 md:max-w-5xl md:mx-auto md:flex md:pt-20 md:justify-between md:gap-10 md:items-center">
       <div className="md:w-1/2">
         <h1 className="text-[#008FAB] font-bold text-3xl text-center mb-5 md:text-4xl">
           Customer Login

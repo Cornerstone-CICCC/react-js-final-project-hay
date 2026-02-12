@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Julius_Sans_One, Nunito_Sans } from 'next/font/google';
 import './globals.css';
 import Footer from './components/Footer';
-import Header from './components/Header';
+import Header from './components/Header/Header';
 
 const nunitoSans = Nunito_Sans({
   variable: '--font-nunito-sans',

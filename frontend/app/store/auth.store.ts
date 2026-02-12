@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 type User = {
   id: string;
@@ -14,8 +15,15 @@ type Action = {
   logout: () => void;
 };
 
-export const useAuthStore = create<State & Action>((set) => ({
-  user: null,
-  setUser: (user) => set({ user }),
-  logout: () => set({ user: null }),
-}));
+export const useAuthStore = create<State & Action>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user) => set({ user }),
+      logout: () => set({ user: null }),
+    }),
+    {
+      name: 'user-storage',
+    },
+  ),
+);

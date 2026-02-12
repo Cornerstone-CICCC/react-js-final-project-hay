@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 type WishItem = {
   wishlistId: string;
@@ -18,12 +19,19 @@ type Action = {
   removeWishItem: (productId: string) => void;
 };
 
-export const useWishlistStore = create<State & Action>((set) => ({
-  wishItems: [],
-  setWishlist: (wishItems) => set({ wishItems }),
-  clearWishlist: () => set({ wishItems: [] }),
-  removeWishItem: (productId) =>
-    set((state) => ({
-      wishItems: state.wishItems.filter((item) => item.productId !== productId),
-    })),
-}));
+export const useWishlistStore = create<State & Action>()(
+  persist(
+    (set) => ({
+      wishItems: [],
+      setWishlist: (wishItems) => set({ wishItems }),
+      clearWishlist: () => set({ wishItems: [] }),
+      removeWishItem: (productId) =>
+        set((state) => ({
+          wishItems: state.wishItems.filter((item) => item.productId !== productId),
+        })),
+    }),
+    {
+      name: 'wishlist-store',
+    },
+  ),
+);

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 type CartItem = {
   cartItemId: string;
@@ -21,12 +22,19 @@ type Action = {
   removeCartItem: (cartItemId: string) => void;
 };
 
-export const useCartStore = create<State & Action>((set) => ({
-  cartItems: [],
-  setCart: (cartItems) => set({ cartItems }),
-  clearCart: () => set({ cartItems: [] }),
-  removeCartItem: (cartItemId) =>
-    set((state) => ({
-      cartItems: state.cartItems.filter((item) => item.cartItemId !== cartItemId),
-    })),
-}));
+export const useCartStore = create<State & Action>()(
+  persist(
+    (set) => ({
+      cartItems: [],
+      setCart: (cartItems) => set({ cartItems }),
+      clearCart: () => set({ cartItems: [] }),
+      removeCartItem: (cartItemId) =>
+        set((state) => ({
+          cartItems: state.cartItems.filter((item) => item.cartItemId !== cartItemId),
+        })),
+    }),
+    {
+      name: 'cart-store',
+    },
+  ),
+);
