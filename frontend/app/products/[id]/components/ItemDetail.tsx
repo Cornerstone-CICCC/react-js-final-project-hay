@@ -2,26 +2,92 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
-import { PiHeartThin } from 'react-icons/pi';
+import { PiHeartFill, PiHeartThin } from 'react-icons/pi';
 import useSocketStore from '@/app/store/socket.store';
 import type { Product } from '@/app/types/products.type';
+import { useCartStore } from '@/app/store/cart.store';
+import { useWishlistStore } from '@/app/store/wishlist.store';
+import { useAuthStore } from '@/app/store/auth.store';
+import toast from 'react-hot-toast';
 
 type Props = {
   product: Product;
 };
+interface CartItemReturn{
+  _id:string,
+  cartId:string,
+  productId:Product,
+  quantity:number
+}
 
 const ItemDetail = ({ product }: Props) => {
-  const { joinItem, leaveItem, shopperCounter } = useSocketStore();
+  const user = useAuthStore(state=>state.user)
+  const joinItem = useSocketStore(state=>state.joinItem);
+  const leaveItem = useSocketStore(state=>state.leaveItem)
+  const shopperCounter = useSocketStore(state=>state.shopperCounter)
+  const setCart = useCartStore(state=>state.setCart) 
+  const cartId = useCartStore(state=>state.cartId)
+  const cartItems = useCartStore(state=>state.cartItems)
+  const {setWishlist,wishItems, removeWishItem } = useWishlistStore(state=>state)
 
   const [quantity, setQuantity] = useState<number>(1);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isInBag, setIsInBag] = useState(false);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+
+  const toggleWishList =()=>{
+  }
+
+  const addToCart = async()=>{
+    //api request
+    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartitems/update`,{
+      method:"POST",
+      headers: { 'Content-Type': 'application/json' },
+      body:JSON.stringify({
+        cartId,
+        productId:product._id,
+        quantity
+      })
+    })
+
+    if(!res.ok){
+      console.log("Error adding items")
+      return
+    }
+
+    const data :CartItemReturn= await res.json()
+
+    //updating store
+    let updatedCartItems = [...cartItems];
+    const existingItem = updatedCartItems.find((i) => i.cartItemId === data._id);
+
+    if (existingItem) {
+      existingItem.quantity = data.quantity;
+    }else{
+      updatedCartItems = [...updatedCartItems, 
+        {
+          cartItemId: data._id,
+          productId: data.productId._id,
+          image: data.productId.image,
+          name: data.productId.name,
+          price: data.productId.price,
+          stock: data.productId.stock,
+          cartId: data.cartId,
+          quantity: data.quantity
+      }]
+    }
+    setCart(updatedCartItems)
+    toast("Item added to your cart")
+  }
 
   useEffect(() => {
+    if(!user) return
     //set liked and in bag
+    const find = wishItems.find(i=>i.productId === product._id)
+    setIsLiked(find?true:false)
+
+    //socket
     const socketData = {
       productId: product._id,
-      userId: '1',
+      userId: user.id,
     };
 
     joinItem(socketData);
@@ -37,6 +103,7 @@ const ItemDetail = ({ product }: Props) => {
     const handleBeforeUnload = () => {
       leaveItem(socketData);
     };
+    toast(`${shopperCounter} people are interested in this item!`)
     document.addEventListener('handleChange', handleChange);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
@@ -51,23 +118,30 @@ const ItemDetail = ({ product }: Props) => {
     <>
       <div className="md:flex gap-8 p-6 justify-center">
         <Image
-          src={product.image}
+        src={`/assets/shine_studio_images/${product.image}`}
           width={350}
           height={350}
           alt={`${product.name.slice(0, 10)}`}
-          className="justify-self-center lg:w-[500]"
+          className="justify-self-center lg:w-[350px] aspect-square"
         />
 
         <div className="flex flex-col gap-4 pt-4 lg:w-[45%]">
           <div className="flex items-center justify-end gap-4">
+            {!isLiked?
+            (
+            <>
             <PiHeartThin className="text-[18px]" />
             Add to Wishlist
+            </>):(<>
+            <PiHeartFill className='text-[18px] text-[#008FAB]'/>
+            Item In Wishlist
+            </>)}
           </div>
 
-          <div className="text-xl md:text-[30px] ">{product.name}</div>
+          <div className="text-xl lg:text-[30px] ">{product.name}</div>
           <div>Free Size</div>
           <div className="flex justify-between">
-            <div className="font-bold text-2xl md:text-[40px] flex flex-col">
+            <div className="font-bold text-2xl lg:text-[40px] flex flex-col">
               $ {product.price}
               <span className="text-xs font-medium">(Incl. taxes and charges)</span>
             </div>
@@ -106,7 +180,9 @@ const ItemDetail = ({ product }: Props) => {
               </button>
             </div>
 
-            <div className="w-full text-center border border-[#008FAB] self-center py-2 hover:bg-[#008FAB] hover:text-white">
+            <div 
+            onClick={addToCart}
+            className="w-full text-center border border-[#008FAB] self-center py-2 hover:bg-[#008FAB] hover:text-white">
               Add to Bag
             </div>
           </div>

@@ -5,6 +5,7 @@ import type { Availability, Category, Product } from '../../types/products.type'
 import { product } from '../dummy';
 import FilterModal from './FilterModal';
 import ItemCard from './ItemCard';
+import { useSearchTermStore } from '@/app/store/searchTerm.store';
 
 export interface FilterQuery {
   availability: Availability[];
@@ -16,6 +17,7 @@ type Props={
 }
 
 const ProductList = ({data}:Props) => {
+  const searchTeem = useSearchTermStore(state=>state.searchTerm)
   const [products, setProducts] = useState<Product[]>(data);
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false);
   const [query, setQuery] = useState<FilterQuery | null>(null);
@@ -29,29 +31,35 @@ const ProductList = ({data}:Props) => {
   };
 
   useEffect(() => {
-
+    setProducts(data)
     if (query) {
+      data.map(item=>{
+        console.log(item)
+        console.log(item.stock===0 )
+      })
       setProducts((prev) =>
-        prev.filter(
-          (item) =>
-            query.category.includes(item.category) &&
-            query.availability.includes('in-stock') &&
-            item.stock > 0 &&
-            query.availability.includes('out-stock') &&
-            item.stock === 0,
-        ),
-      );
+      prev.filter((item) => {
+        const categoryMatch =
+          query.category.length === 0 ||
+          query.category.includes(item.category);
+
+        const availabilityMatch =
+          query.availability.length === 0 ||
+          (query.availability.includes('in-stock') && item.stock > 0) ||
+          (query.availability.includes('out-stock') && item.stock === 0);
+
+        return categoryMatch && availabilityMatch;
+      })
+    );
     }
 
     //filter out with product name
-    // if(term){
-    //   setProducts(prev=>
-    //     prev.fill(
-    //       (item) =>
-
-    //     )
-    // }
-  }, [query]);
+    if(searchTeem){
+      setProducts(prev=>
+        prev.filter(item=> item.name.toLowerCase().includes(searchTeem.toLowerCase()))
+      )
+    }
+  }, [query,searchTeem]);
 
   return (
     <div className="pt-4">

@@ -15,10 +15,15 @@ type Action = {
   logout: () => void;
 };
 
+const newUser={
+  id: "698e925803f750cea7d9af93",
+  firstname: "Amy"
+}
+
 export const useAuthStore = create<State & Action>()(
   persist(
     (set) => ({
-      user: null,
+      user: newUser,
       setUser: (user) => set({ user }),
       logout: () => set({ user: null }),
     }),

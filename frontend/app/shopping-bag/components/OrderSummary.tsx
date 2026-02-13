@@ -1,14 +1,20 @@
 'use client';
 
+import { useCartStore } from '@/app/store/cart.store';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const OrderSummary = () => {
+  const cartItems =useCartStore(state=>state.cartItems)
   const [total, setTotal] = useState<number>(0);
   const [subtotal, setSubTotal] = useState<number>(0);
 
   //calculate total from store
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const amount =cartItems.reduce((acc, curr)=>acc+= curr.price*curr.quantity,0)
+    setSubTotal(amount)
+    setTotal(amount)
+  }, []);
 
   //send finalized cart to backend after checkout
   const handleCheckout = () => {};
