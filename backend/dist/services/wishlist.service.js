@@ -40,7 +40,17 @@ const getNumProduct = (productId) => __awaiter(void 0, void 0, void 0, function*
 });
 // Add item to wishlist
 const add = (newItem) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield wishlist_model_1.Wishlist.create(newItem);
+    const exists = yield wishlist_model_1.Wishlist.exists({
+        userId: newItem.userId,
+        productId: newItem.productId,
+    });
+    if (exists)
+        return;
+    const created = yield wishlist_model_1.Wishlist.create(newItem);
+    return yield wishlist_model_1.Wishlist.findById(created._id)
+        .populate("productId", "image name price")
+        .select("-userId -createdAt -updatedAt -__v")
+        .lean();
 });
 // Remove item from wishlist
 const remove = (id) => __awaiter(void 0, void 0, void 0, function* () {

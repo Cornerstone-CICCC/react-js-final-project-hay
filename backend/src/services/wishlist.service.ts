@@ -54,7 +54,19 @@ const getNumProduct = async (productId: string) => {
 
 // Add item to wishlist
 const add = async (newItem: WishlistDTO) => {
-  return await Wishlist.create(newItem);
+  const exists = await Wishlist.exists({
+    userId: newItem.userId,
+    productId: newItem.productId,
+  });
+
+  if (exists) return;
+
+  const created = await Wishlist.create(newItem);
+
+  return await Wishlist.findById(created._id)
+    .populate("productId", "image name price")
+    .select("-userId -createdAt -updatedAt -__v")
+    .lean();
 };
 
 // Remove item from wishlist

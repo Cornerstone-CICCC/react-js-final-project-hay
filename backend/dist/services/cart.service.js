@@ -17,7 +17,8 @@ const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 // return cart by userId
 const getByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield cart_model_1.Cart.findOne({ userId });
+    const cart = yield cart_model_1.Cart.findOne({ userId }).select("_id").lean();
+    return cart === null || cart === void 0 ? void 0 : cart._id;
 });
 //return cartId, cartItems, products by cartId
 const getUserCartWithItems = (userId) => __awaiter(void 0, void 0, void 0, function* () {

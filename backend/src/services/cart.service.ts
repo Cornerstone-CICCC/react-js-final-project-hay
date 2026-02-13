@@ -9,7 +9,8 @@ const getAll = async () => {
 
 // return cart by userId
 const getByUserId = async (userId: string) => {
-  return await Cart.findOne({ userId });
+  const cart = await Cart.findOne({ userId }).select("_id").lean();
+  return cart?._id;
 };
 
 //return cartId, cartItems, products by cartId
