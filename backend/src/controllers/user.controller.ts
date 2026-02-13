@@ -175,7 +175,7 @@ const login = async (req: Request<{}, {}, ILoginDTO>, res: Response) => {
         userId: foundUser.id,
         firstname: foundUser.firstname,
       },
-      //cartId: cartItems.id,
+      cartId,
       cartItems,
       wishlist,
     });

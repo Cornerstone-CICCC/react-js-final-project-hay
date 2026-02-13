@@ -162,7 +162,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 userId: foundUser.id,
                 firstname: foundUser.firstname,
             },
-            //cartId: cartItems.id,
+            cartId,
             cartItems,
             wishlist,
         });
