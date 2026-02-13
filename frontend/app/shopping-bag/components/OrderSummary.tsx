@@ -14,7 +14,7 @@ const OrderSummary = () => {
     const amount =cartItems.reduce((acc, curr)=>acc+= curr.price*curr.quantity,0)
     setSubTotal(amount)
     setTotal(amount)
-  }, []);
+  }, [JSON.stringify(cartItems)]);
 
   //send finalized cart to backend after checkout
   const handleCheckout = () => {};

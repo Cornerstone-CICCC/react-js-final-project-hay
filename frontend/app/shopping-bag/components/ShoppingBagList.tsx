@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { RiCloseLargeLine } from 'react-icons/ri';
 import type { Product } from '@/app/types/products.type';
@@ -10,8 +10,6 @@ import { CartItem, useCartStore } from '@/app/store/cart.store';
 import { useAuthStore } from '@/app/store/auth.store';
 import { useWishlistStore, WishItem } from '@/app/store/wishlist.store';
 import { redirect } from 'next/navigation';
-
-
 
 interface WishlistsReturnType{
   userId:string,
@@ -33,9 +31,9 @@ const ShoppingBagList = () => {
   const setCart = useCartStore(state=>state.setCart)
   const wishItems = useWishlistStore(state=>state.wishItems)
   const setWishlist= useWishlistStore(state=>state.setWishlist)
-  const [data, setData] = useState<CartItem[]>([])
-  const [activeItem, setActiveItem] = useState<CartItem | null>(null);
-  const ref = useRef<HTMLDivElement | null>(null);
+  
+  const timeoutRef = useRef<NodeJS.Timeout|null>(null);
+  const lastChangedItemRef = useRef<CartItem | null>(null);
 
   if(!user){
     redirect("/login")
@@ -94,59 +92,62 @@ const ShoppingBagList = () => {
     setCart(removedCartItems)
   };
 
-  const reduceQty = (item: CartItem) => {
-    console.log(item)
-    if (item.quantity === 1) {
+  const syncToBackend = async (item: CartItem) => {
+    console.log('Sending to backend:', item.quantity);
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartitems/update`, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cartId,
+        productId: item.productId,
+        quantity: item.quantity
+      })
+    });
+
+    if (!res.ok) {
+      console.log("Error updating item");
       return;
     }
-    const newQty = item.quantity - 1;
 
-    let updatedCartItems = [...cartItems];
-    let existingItem = updatedCartItems.find((i) => i.cartItemId === item.cartItemId);
+    const data = await res.json();
+    console.log('Backend updated:', data);
+  };
 
-    if (existingItem) {
-      existingItem ={
-          cartItemId: existingItem.cartItemId,
-          productId: existingItem.productId,
-          image: existingItem.image,
-          name: existingItem.name,
-          price: existingItem.price,
-          stock: existingItem.stock,
-          cartId: existingItem.cartId,
-          quantity: newQty
-      } as CartItem
+
+const updateQuantity = (cartItemId: string, newQuantity: number) => {
+    if (newQuantity < 1) return;
+
+    // Update store 
+    const updatedItems = cartItems.map(item =>
+      item.cartItemId === cartItemId
+        ? { ...item, quantity: newQuantity }
+        : item
+    );
+    setCart(updatedItems);
+
+    // Save which item changed
+    const changedItem = updatedItems.find(i => i.cartItemId === cartItemId);
+    lastChangedItemRef.current = changedItem || null;
+
+    // Clear old timer and start new one
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-
-    setCart(updatedCartItems)
-
+    timeoutRef.current = setTimeout(() => {
+      if (lastChangedItemRef.current) {
+        syncToBackend(lastChangedItemRef.current);
+      }
+    }, 2000);
+  };
+  
+  const reduceQty = (item: CartItem) => {
+    updateQuantity(item.cartItemId, item.quantity - 1);
   };
 
   const increaseQty = (item: CartItem) => {
-    const newQty = item.quantity + 1;
-
-    let updatedCartItems = [...cartItems];
-    let existingItem = updatedCartItems.find((i) => i.cartItemId === item.cartItemId);
-
-    if (existingItem) {
-      existingItem ={
-          cartItemId: existingItem.cartItemId,
-          productId: existingItem.productId,
-          image: existingItem.image,
-          name: existingItem.name,
-          price: existingItem.price,
-          stock: existingItem.stock,
-          cartId: existingItem.cartId,
-          quantity: newQty
-      } as CartItem
-    }
-
-    setCart(updatedCartItems)
+    updateQuantity(item.cartItemId, item.quantity + 1);
   };
-
-  const handleQuantity = async (item: CartItem) => {
-    console.log("Sending to backend")
-  };
-
 
   useEffect(() => {
     const fetchData = async ()=>{
@@ -167,25 +168,16 @@ const ShoppingBagList = () => {
           cartId: item.cartId,
           quantity: item.quantity
       })) as CartItem[]
-      setData(mappedDate)
+      setCart(mappedDate)
     }
-    fetchData()
-  }, [data]);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (activeItem && ref.current && !ref.current.contains(e.target as Node)) {
-        console.log('Clicked outside, active item was:', activeItem);
-        handleQuantity(activeItem);
-      }
+    if(cartId){
+      fetchData()
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [activeItem]);
+  }, [cartId,setCart]);
 
   return (
     <div className="w-full max-w-250">
-      <div className="py-2">
+      <div className="py-2 w-fit">
         <Link href="/products" className="flex gap-2 items-center">
           <MdOutlineKeyboardArrowLeft className="text-lg" />
           <span className="underline">Continue Shopping</span>
@@ -195,10 +187,9 @@ const ShoppingBagList = () => {
       <div>
         <h2 className="py-6 text-3xl border-b border-[rgba(0,143,171,0.5)]">Shopping Bag</h2>
 
-        {data.map((item) => (
+        {cartItems.map((item) => (
           <div
             key={item.cartItemId}
-            ref={activeItem?.cartItemId === item.cartItemId ? ref : null}
             className="py-4 px-4 md:px-8 flex gap-6 border-b border-[rgba(0,143,171,0.5)]"
           >
             <Image
@@ -224,7 +215,6 @@ const ShoppingBagList = () => {
               <div className="flex justify-between pb-6">
                 <div
                   className="flex items-center border border-[#008FAB] p-1"
-                  onClick={() => setActiveItem(item)}
                 >
                   <button
                     type="button"

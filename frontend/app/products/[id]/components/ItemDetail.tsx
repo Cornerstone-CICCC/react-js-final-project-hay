@@ -75,6 +75,7 @@ const ItemDetail = ({ product }: Props) => {
       }]
     }
     setCart(updatedCartItems)
+    setQuantity(1)
     toast("Item added to your cart")
   }
 
