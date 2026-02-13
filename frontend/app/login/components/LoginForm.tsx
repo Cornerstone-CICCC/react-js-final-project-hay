@@ -23,6 +23,7 @@ const LoginForm = () => {
 
   const setUser = useAuthStore((s) => s.setUser);
   const setCart = useCartStore((s) => s.setCart);
+  const setCartId = useCartStore((s) => s.setCartId);
   const setWishlist = useWishlistStore((s) => s.setWishlist);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +50,7 @@ const LoginForm = () => {
     }
 
     try {
-      const res = await fetch('/api/login', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,6 +68,7 @@ const LoginForm = () => {
       }
       setUser(data.user);
       setCart(data.cartItems);
+      setCartId(data.cartId);
       setWishlist(data.wishlist);
 
       router.push('/');
@@ -92,7 +94,7 @@ const LoginForm = () => {
           <p className="text-[#DA2929] text-sm mt-1">Please enter your email address.</p>
         )}
       </div>
-      <div className="mb-7">
+      <div className="mb-4">
         <div className="flex border border-slate-500 bg-slate-100 rounded-xl">
           <input
             type={isPasswordVisible ? 'text' : 'password'}
@@ -114,10 +116,10 @@ const LoginForm = () => {
           <p className="text-[#DA2929] text-sm mt-1">Please enter your password.</p>
         )}
       </div>
-      <p className="text-[#DA2929] text-sm mb-2">{error}</p>
+      {error && <p className="text-[#DA2929] text-sm mb-2">{error}</p>}
       <button
         type="submit"
-        className="bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
+        className="bg-[#008FAB] text-white font-bold px-5 py-4 mt-3 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
       >
         Sign In
       </button>

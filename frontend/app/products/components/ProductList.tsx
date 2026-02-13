@@ -11,9 +11,9 @@ export interface FilterQuery {
   category: Category[];
 }
 
-type Props={
-  data:Product[]
-}
+type Props = {
+  data: Product[];
+};
 
 const ProductList = ({data}:Props) => {
   const searchTeem = useSearchTermStore(state=>state.searchTerm)

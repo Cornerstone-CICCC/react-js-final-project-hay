@@ -11,13 +11,14 @@ const LogoutButton = () => {
   const logout = useAuthStore((s) => s.logout);
   const setSearchTerm = useSearchTermStore((s) => s.setSearchTerm);
   const clearCart = useCartStore((s) => s.clearCart);
+  const setCartId = useCartStore((s) => s.setCartId);
   const clearWishlist = useWishlistStore((s) => s.clearWishlist);
   const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      const res = await fetch('/api/logout', {
-        method: 'POST',
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/users/logout`, {
+        method: 'GET',
         credentials: 'include',
       });
 
@@ -28,6 +29,7 @@ const LogoutButton = () => {
       logout();
       setSearchTerm('');
       clearCart();
+      setCartId('');
       clearWishlist();
 
       router.push('/login');
