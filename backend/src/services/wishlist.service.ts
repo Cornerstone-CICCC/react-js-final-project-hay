@@ -12,6 +12,26 @@ const getAll = async () => {
   return await Wishlist.find();
 };
 
+// Get top 4 items in the wishlist
+const getTrend = async () => {
+  const trending = await Wishlist.aggregate([
+    {
+      $group: {
+        _id: "$productId",
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { count: -1 } },
+    { $limit: 4 },
+  ]);
+
+  return Wishlist.populate(trending, {
+    path: "_id",
+    select: "name price image",
+    model: "Product",
+  });
+};
+
 // Get all wishlist by userId
 const getByUserId = async (userId: string) => {
   const wishItems = await Wishlist.find({ userId })
@@ -76,6 +96,7 @@ const remove = async (id: string) => {
 
 export default {
   getAll,
+  getTrend,
   getByUserId,
   getNumProduct,
   add,

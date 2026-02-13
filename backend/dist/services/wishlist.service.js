@@ -15,6 +15,24 @@ const product_model_1 = require("../models/product.model");
 const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield wishlist_model_1.Wishlist.find();
 });
+// Get top 4 items in the wishlist
+const getTrend = () => __awaiter(void 0, void 0, void 0, function* () {
+    const trending = yield wishlist_model_1.Wishlist.aggregate([
+        {
+            $group: {
+                _id: "$productId",
+                count: { $sum: 1 },
+            },
+        },
+        { $sort: { count: -1 } },
+        { $limit: 4 },
+    ]);
+    return wishlist_model_1.Wishlist.populate(trending, {
+        path: "_id",
+        select: "name price image",
+        model: "Product",
+    });
+});
 // Get all wishlist by userId
 const getByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const wishItems = yield wishlist_model_1.Wishlist.find({ userId })
@@ -58,6 +76,7 @@ const remove = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.default = {
     getAll,
+    getTrend,
     getByUserId,
     getNumProduct,
     add,

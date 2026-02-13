@@ -15,8 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleSocketEvents = void 0;
 const wishlist_service_1 = __importDefault(require("../services/wishlist.service"));
 const shopProductUser = [];
-const handleSocketEvents = (io, socket) => {
+const handleSocketEvents = (io, socket) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`User connected: ${socket.id}`);
+    // show the top 4 items in the wishlist
+    const trendingItems = yield wishlist_service_1.default.getTrend();
+    console.log("trending Items", trendingItems);
+    io.emit("initialTrending", trendingItems);
     // the number of people watching products
     // 1. productId
     // 2. userId
@@ -72,7 +76,7 @@ const handleSocketEvents = (io, socket) => {
             emitCurrentCount(io, productId);
         });
     }));
-};
+});
 exports.handleSocketEvents = handleSocketEvents;
 function emitCurrentCount(io, productId) {
     const countShopper = new Set(shopProductUser
