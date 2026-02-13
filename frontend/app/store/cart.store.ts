@@ -28,7 +28,7 @@ export const useCartStore = create<State & Action>()(
   persist(
     (set) => ({
       cartItems: [],
-      cartId:"698e925803f750cea7d9af95",
+      cartId:"",
       setCart: (cartItems) => set({ cartItems }),
       setCartId:(cartId)=> set({cartId}),
       clearCart: () => set({ cartItems: [] }),

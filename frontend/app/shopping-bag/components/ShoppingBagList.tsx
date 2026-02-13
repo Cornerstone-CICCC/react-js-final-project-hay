@@ -10,6 +10,7 @@ import { CartItem, useCartStore } from '@/app/store/cart.store';
 import { useAuthStore } from '@/app/store/auth.store';
 import { useWishlistStore, WishItem } from '@/app/store/wishlist.store';
 import { redirect } from 'next/navigation';
+import useSocketStore from '@/app/store/socket.store';
 
 interface WishlistsReturnType{
   userId:string,
@@ -25,6 +26,7 @@ interface CartItemReturn{
 }
 
 const ShoppingBagList = () => {
+  const likedItem = useSocketStore(state=>state.likedItem)
   const user =useAuthStore(state=>state.user)
   const cartId = useCartStore(state=>state.cartId)
   const cartItems = useCartStore(state=>state.cartItems)
@@ -67,6 +69,8 @@ const ShoppingBagList = () => {
         price: data.productId.price??"",
       }
     ]
+    
+    likedItem({productId:data.productId._id})
 
     setWishlist(newWishItems)
 
@@ -84,11 +88,15 @@ const ShoppingBagList = () => {
       console.log("Error deleting cart item")
       return
     }
-    const data = await res.json()
-    console.log(data)
+    const data :{
+      _id:string,
+      cartId:string,
+      productId:string,
+      quantity:number
+    }= await res.json()
 
     //remove from cart
-    const removedCartItems = cartItems.filter(item=>item.cartItemId!==cartItemId)
+    const removedCartItems = cartItems.filter(item=>item.cartItemId!==data._id)
     setCart(removedCartItems)
   };
 
@@ -111,11 +119,11 @@ const ShoppingBagList = () => {
     }
 
     const data = await res.json();
-    console.log('Backend updated:', data);
+
   };
 
 
-const updateQuantity = (cartItemId: string, newQuantity: number) => {
+  const updateQuantity = (cartItemId: string, newQuantity: number) => {
     if (newQuantity < 1) return;
 
     // Update store 
@@ -189,7 +197,7 @@ const updateQuantity = (cartItemId: string, newQuantity: number) => {
 
         {cartItems.map((item) => (
           <div
-            key={item.cartItemId}
+            key={`cartItem-${item.cartItemId}`}
             className="py-4 px-4 md:px-8 flex gap-6 border-b border-[rgba(0,143,171,0.5)]"
           >
             <Image

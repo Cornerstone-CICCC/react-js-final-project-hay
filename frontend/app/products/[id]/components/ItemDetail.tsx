@@ -26,6 +26,7 @@ interface WishlistsReturnType{
 }
 
 const ItemDetail = ({ product }: Props) => {
+  const likedItem = useSocketStore(state=>state.likedItem)
   const user = useAuthStore(state=>state.user)
   const joinItem = useSocketStore(state=>state.joinItem);
   const leaveItem = useSocketStore(state=>state.leaveItem)
@@ -77,6 +78,7 @@ const ItemDetail = ({ product }: Props) => {
     })
 
     const data: WishlistsReturnType = await res.json()
+    console.log(data)
 
     const newWishItems :WishItem[]=[
       ...wishItems,
@@ -88,9 +90,11 @@ const ItemDetail = ({ product }: Props) => {
         price: data.productId.price??"",
       }
     ]
+    likedItem({productId:data.productId._id})
+    
     setWishlist(newWishItems)
     }
-    
+
   }
 
   const addToCart = async()=>{
@@ -138,9 +142,6 @@ const ItemDetail = ({ product }: Props) => {
 
   useEffect(() => {
     if(!user) return
-    //set liked and in bag
-    const find = wishItems.find(i=>i.productId === product._id)
-    // setIsLiked(find?true:false)
 
     //socket
     const socketData = {
@@ -186,7 +187,7 @@ const ItemDetail = ({ product }: Props) => {
         <div className="flex flex-col gap-4 pt-4 lg:w-[45%]">
           <div className="flex items-center justify-end gap-4"
           >
-            {wishItems.find(i=>i.productId === product._id)===null?
+            {wishItems.find(i=>i.productId === product._id)===undefined?
             (
             <>
             <PiHeartThin 

@@ -1,13 +1,22 @@
 'use client';
 
+import { useAuthStore } from '@/app/store/auth.store';
 import { useCartStore } from '@/app/store/cart.store';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const OrderSummary = () => {
+  const user = useAuthStore(state=>state.user)
+  const setCartId=useCartStore(state=>state.setCartId)
+  const cartId = useCartStore(state=>state.cartId)
   const cartItems =useCartStore(state=>state.cartItems)
   const [total, setTotal] = useState<number>(0);
   const [subtotal, setSubTotal] = useState<number>(0);
+
+  if(!user){
+    redirect("/")
+  }
 
   //calculate total from store
   useEffect(() => {
@@ -15,9 +24,6 @@ const OrderSummary = () => {
     setSubTotal(amount)
     setTotal(amount)
   }, [JSON.stringify(cartItems)]);
-
-  //send finalized cart to backend after checkout
-  const handleCheckout = () => {};
 
   return (
     <div className="p-4 flex flex-col gap-4 justify-center">
@@ -42,7 +48,6 @@ const OrderSummary = () => {
       <Link
         href="/checkout"
         className="bg-[#008FAB] text-white text-center mt-3 px-6 py-2 rounded-xl"
-        onClick={handleCheckout}
       >
         Proceed to Checkout
       </Link>

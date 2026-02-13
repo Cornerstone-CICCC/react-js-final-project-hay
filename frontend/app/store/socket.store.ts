@@ -63,7 +63,7 @@ const useSocketStore = create<SocketStoreType>()(
             productDetail:Product
           }
         })=>{
-          console.log(data)
+          console.log("trending result:",data)
           set({trendingProducts:data})
         })
 

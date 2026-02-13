@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
 import type { Availability, Category, Product } from '../../types/products.type';
-import { product } from '../dummy';
 import FilterModal from './FilterModal';
 import ItemCard from './ItemCard';
 import { useSearchTermStore } from '@/app/store/searchTerm.store';
@@ -82,6 +81,11 @@ const ProductList = ({data}:Props) => {
         <div className="w-full pt-20 text-2xl flex justify-center">No Matching Products Found</div>
       ) : (
         <div className="py-4 px-8">
+          {searchTeem&&
+            <div
+            className='font-bold max-w-350 mx-auto'>
+              Showing "{searchTeem}" Result...
+              </div>}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-4 max-w-350 mx-auto">
             {products.map((item, i) => (
               <ItemCard product={item} key={i} />
