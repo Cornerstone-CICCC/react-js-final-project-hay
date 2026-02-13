@@ -10,8 +10,13 @@ export interface socketDTO {
 
 const shopProductUser: socketDTO[] = [];
 
-export const handleSocketEvents = (io: Server, socket: Socket) => {
+export const handleSocketEvents = async (io: Server, socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
+
+  // show the top 4 items in the wishlist
+  const trendingItems = await wishlistService.getTrend();
+  console.log("trending Items", trendingItems);
+  io.emit("initialTrending", trendingItems);
 
   // the number of people watching products
   // 1. productId
