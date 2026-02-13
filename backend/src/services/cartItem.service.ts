@@ -17,7 +17,7 @@ const updateItem = async (
     { cartId, productId },
     { quantity },
     { new: true, upsert: true },
-  );
+  ).populate("productId", "name price image stock");
 
   return addedItem;
 };
