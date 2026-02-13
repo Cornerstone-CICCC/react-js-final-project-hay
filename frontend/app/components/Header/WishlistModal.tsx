@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { IoCloseOutline } from 'react-icons/io5';
-import { useWishlistStore } from '@/app/store/wishlist.store';
 import { useAuthStore } from '@/app/store/auth.store';
+import { useWishlistStore } from '@/app/store/wishlist.store';
 
 type Props = {
   isOpen: boolean;
@@ -15,7 +15,7 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
   const wishItems = useWishlistStore((s) => s.wishItems);
   const removeWishItem = useWishlistStore((s) => s.removeWishItem);
   const totalWishNum = wishItems.length;
-  const user = useAuthStore(s => s.user)
+  const user = useAuthStore((s) => s.user);
 
   const handleRemove = async (productId: string) => {
     removeWishItem(productId);
@@ -91,7 +91,7 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
               )
             ) : (
               <>
-                <p className='mt-8'>You are not logged in.</p>
+                <p className="mt-8">You are not logged in.</p>
                 <Link href="/login" className="mt-8">
                   Sign In
                 </Link>

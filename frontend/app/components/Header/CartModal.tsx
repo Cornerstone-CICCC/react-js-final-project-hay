@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { IoCloseOutline } from 'react-icons/io5';
-import { useCartStore } from '@/app/store/cart.store';
 import { useAuthStore } from '@/app/store/auth.store';
+import { useCartStore } from '@/app/store/cart.store';
 
 type Props = {
   isOpen: boolean;
@@ -13,7 +13,7 @@ const CartModal = ({ isOpen, onClose }: Props) => {
   const cartItems = useCartStore((s) => s.cartItems);
   const removeCartItem = useCartStore((s) => s.removeCartItem);
   const totalCartNum = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const user = useAuthStore(s => s.user)
+  const user = useAuthStore((s) => s.user);
 
   const handleRemove = async (cartItemId: string) => {
     removeCartItem(cartItemId);
@@ -89,7 +89,7 @@ const CartModal = ({ isOpen, onClose }: Props) => {
               )
             ) : (
               <>
-                <p className='mt-8'>You are not logged in.</p>
+                <p className="mt-8">You are not logged in.</p>
                 <Link href="/login" className="mt-8">
                   Sign In
                 </Link>

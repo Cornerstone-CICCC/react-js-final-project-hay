@@ -8,14 +8,14 @@ import { IoIosMenu } from 'react-icons/io';
 import { PiHeartStraight } from 'react-icons/pi';
 import { RiUserLine } from 'react-icons/ri';
 import { SlHandbag } from 'react-icons/sl';
+import { useAuthStore } from '@/app/store/auth.store';
 import { useCartStore } from '../../store/cart.store';
+import LogoutButton from '../LogoutButton';
 import CartModal from './CartModal';
 import SearchModal from './SearchModal';
 import SpMenuModal from './SpMenuModal';
 import SpSearchModal from './SpSearchModal';
 import WishlistModal from './WishlistModal';
-import { useAuthStore } from '@/app/store/auth.store';
-import LogoutButton from '../LogoutButton';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -91,7 +91,7 @@ const Header = () => {
           <li className="hidden md:flex">
             {user ? (
               <LogoutButton />
-              ) : (
+            ) : (
               <Link href="/login">
                 <RiUserLine />
               </Link>
