@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type WishItem = {
+export type WishItem = {
   wishlistId: string;
   productId: string;
   image: string;

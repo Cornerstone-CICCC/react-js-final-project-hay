@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
 import type { Availability, Category, Product } from '../../types/products.type';
-import { product } from '../dummy';
 import FilterModal from './FilterModal';
 import ItemCard from './ItemCard';
+import { useSearchTermStore } from '@/app/store/searchTerm.store';
 
 export interface FilterQuery {
   availability: Availability[];
@@ -15,7 +15,8 @@ type Props = {
   data: Product[];
 };
 
-const ProductList = ({ data }: Props) => {
+const ProductList = ({data}:Props) => {
+  const searchTeem = useSearchTermStore(state=>state.searchTerm)
   const [products, setProducts] = useState<Product[]>(data);
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false);
   const [query, setQuery] = useState<FilterQuery | null>(null);
@@ -29,28 +30,35 @@ const ProductList = ({ data }: Props) => {
   };
 
   useEffect(() => {
+    setProducts(data)
     if (query) {
+      data.map(item=>{
+        console.log(item)
+        console.log(item.stock===0 )
+      })
       setProducts((prev) =>
-        prev.filter(
-          (item) =>
-            query.category.includes(item.category) &&
-            query.availability.includes('in-stock') &&
-            item.stock > 0 &&
-            query.availability.includes('out-stock') &&
-            item.stock === 0,
-        ),
-      );
+      prev.filter((item) => {
+        const categoryMatch =
+          query.category.length === 0 ||
+          query.category.includes(item.category);
+
+        const availabilityMatch =
+          query.availability.length === 0 ||
+          (query.availability.includes('in-stock') && item.stock > 0) ||
+          (query.availability.includes('out-stock') && item.stock === 0);
+
+        return categoryMatch && availabilityMatch;
+      })
+    );
     }
 
     //filter out with product name
-    // if(term){
-    //   setProducts(prev=>
-    //     prev.fill(
-    //       (item) =>
-
-    //     )
-    // }
-  }, [query]);
+    if(searchTeem){
+      setProducts(prev=>
+        prev.filter(item=> item.name.toLowerCase().includes(searchTeem.toLowerCase()))
+      )
+    }
+  }, [query,searchTeem]);
 
   return (
     <div className="pt-4">
@@ -73,6 +81,11 @@ const ProductList = ({ data }: Props) => {
         <div className="w-full pt-20 text-2xl flex justify-center">No Matching Products Found</div>
       ) : (
         <div className="py-4 px-8">
+          {searchTeem&&
+            <div
+            className='font-bold max-w-350 mx-auto'>
+              Showing "{searchTeem}" Result...
+              </div>}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-4 max-w-350 mx-auto">
             {products.map((item, i) => (
               <ItemCard product={item} key={i} />
