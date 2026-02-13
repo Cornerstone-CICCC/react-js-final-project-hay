@@ -7,6 +7,11 @@ const getAll = async () => {
   return await Cart.find();
 };
 
+// return cart by userId
+const getByUserId = async (userId: string) => {
+  return await Cart.findOne({ userId });
+};
+
 //return cartId, cartItems, products by cartId
 const getUserCartWithItems = async (userId: string) => {
   const cart = await Cart.findOne({ userId, status: "active" });
@@ -59,6 +64,7 @@ const deactivate = async (id: string) => {
 
 export default {
   getAll,
+  getByUserId,
   getUserCartWithItems,
   add,
   deactivate,

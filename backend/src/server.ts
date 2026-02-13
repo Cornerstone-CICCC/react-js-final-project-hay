@@ -19,7 +19,7 @@ const app = express();
 //Middleware
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:3000",
     credentials: true,
   }),
 );
@@ -55,7 +55,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
+    credentials: true,
   },
 });
 

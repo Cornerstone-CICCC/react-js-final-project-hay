@@ -161,6 +161,8 @@ const login = async (req: Request<{}, {}, ILoginDTO>, res: Response) => {
       console.log(req.session.userId);
     }
 
+    const cartId = await cartService.getByUserId(foundUser.id);
+
     // Cart Items
     const cartItems = await cartService.getUserCartWithItems(foundUser.id);
 
@@ -173,6 +175,7 @@ const login = async (req: Request<{}, {}, ILoginDTO>, res: Response) => {
         userId: foundUser.id,
         firstname: foundUser.firstname,
       },
+      //cartId: cartItems.id,
       cartItems,
       wishlist,
     });

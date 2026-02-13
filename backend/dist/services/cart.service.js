@@ -15,6 +15,10 @@ const cartItem_model_1 = require("../models/cartItem.model");
 const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield cart_model_1.Cart.find();
 });
+// return cart by userId
+const getByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield cart_model_1.Cart.findOne({ userId });
+});
 //return cartId, cartItems, products by cartId
 const getUserCartWithItems = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const cart = yield cart_model_1.Cart.findOne({ userId, status: "active" });
@@ -45,6 +49,7 @@ const deactivate = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.default = {
     getAll,
+    getByUserId,
     getUserCartWithItems,
     add,
     deactivate,
