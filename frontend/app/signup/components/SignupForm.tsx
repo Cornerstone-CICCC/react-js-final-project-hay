@@ -32,6 +32,7 @@ const SignupForm = () => {
 
   const setUser = useAuthStore((s) => s.setUser);
   const setCart = useCartStore((s) => s.setCart);
+  const setCartId = useCartStore((s) => s.setCartId);
   const setWishlist = useWishlistStore((s) => s.setWishlist);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -129,6 +130,7 @@ const SignupForm = () => {
         firstname: data.newUser.firstname,
       });
       setCart([]);
+      setCartId(data.cartId);
       setWishlist([]);
 
       router.push('/');

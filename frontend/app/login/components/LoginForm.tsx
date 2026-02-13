@@ -23,6 +23,7 @@ const LoginForm = () => {
 
   const setUser = useAuthStore((s) => s.setUser);
   const setCart = useCartStore((s) => s.setCart);
+  const setCartId = useCartStore((s) => s.setCartId);
   const setWishlist = useWishlistStore((s) => s.setWishlist);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -67,6 +68,7 @@ const LoginForm = () => {
       }
       setUser(data.user);
       setCart(data.cartItems);
+      setCartId(data.cartId);
       setWishlist(data.wishlist);
 
       router.push('/');
