@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { IoCloseOutline } from 'react-icons/io5';
 import { useWishlistStore } from '@/app/store/wishlist.store';
+import { useAuthStore } from '@/app/store/auth.store';
 
 type Props = {
   isOpen: boolean;
@@ -14,12 +15,13 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
   const wishItems = useWishlistStore((s) => s.wishItems);
   const removeWishItem = useWishlistStore((s) => s.removeWishItem);
   const totalWishNum = wishItems.length;
+  const user = useAuthStore(s => s.user)
 
   const handleRemove = async (productId: string) => {
     removeWishItem(productId);
 
     try {
-      const res = await fetch(`/wishlists/${productId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${productId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -52,37 +54,48 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
             <p className="text-center font-semibold text-2xl">
               Your Wishlist <span className="text-[#008FAB]">({totalWishNum})</span>
             </p>
-            <ul>
-              {wishItems.map((i) => (
-                <li key={i.productId} className="flex gap-5 py-8 border-b-[#008FAB]">
-                  <div>
-                    <Image
-                      src={`/assets/products/${i.image}`}
-                      alt={i.name}
-                      width={154}
-                      height={154}
-                    />
-                  </div>
-                  <div>
-                    <p>{i.name}</p>
-                    <p className="mt-4">${i.price}</p>
-                  </div>
-                  <button
-                    type="button"
-                    className="text-[28px] cursor-pointer text-[#008FAB]"
-                    onClick={() => handleRemove(i.productId)}
-                  >
-                    <IoCloseOutline />
-                  </button>
-                </li>
-              ))}
-            </ul>
-            {totalWishNum === 0 ? (
-              <p className="mt-8">Your Wishlist is empty.</p>
+            {user ? (
+              totalWishNum === 0 ? (
+                <p className="mt-8">Your Wishlist is empty.</p>
+              ) : (
+                <>
+                  <ul>
+                    {wishItems.map((i) => (
+                      <li key={`h_${i.productId}`} className="flex gap-5 py-8 border-b-[#008FAB]">
+                        <div>
+                          <Image
+                            src={`/assets/shine_studio_images/${i.image}`}
+                            alt={i.name}
+                            width={154}
+                            height={154}
+                          />
+                        </div>
+                        <div>
+                          <p>{i.name}</p>
+                          <p className="mt-4">${i.price}</p>
+                        </div>
+                        <button
+                          type="button"
+                          className="text-[28px] cursor-pointer text-[#008FAB]"
+                          onClick={() => handleRemove(i.productId)}
+                        >
+                          <IoCloseOutline />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/wishlist" className="mt-8">
+                    View Wishlist
+                  </Link>
+                </>
+              )
             ) : (
-              <Link href="/wishlist" className="mt-8">
-                View Wishlist
-              </Link>
+              <>
+                <p className='mt-8'>You are not logged in.</p>
+                <Link href="/login" className="mt-8">
+                  Sign In
+                </Link>
+              </>
             )}
           </div>
         </div>

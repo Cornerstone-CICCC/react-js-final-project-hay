@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { IoCloseOutline } from 'react-icons/io5';
 import { useCartStore } from '@/app/store/cart.store';
+import { useAuthStore } from '@/app/store/auth.store';
 
 type Props = {
   isOpen: boolean;
@@ -12,12 +13,13 @@ const CartModal = ({ isOpen, onClose }: Props) => {
   const cartItems = useCartStore((s) => s.cartItems);
   const removeCartItem = useCartStore((s) => s.removeCartItem);
   const totalCartNum = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const user = useAuthStore(s => s.user)
 
   const handleRemove = async (cartItemId: string) => {
     removeCartItem(cartItemId);
 
     try {
-      const res = await fetch(`/cartitems/${cartItemId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartitems/${cartItemId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -50,37 +52,48 @@ const CartModal = ({ isOpen, onClose }: Props) => {
             <p className="text-center font-semibold text-2xl">
               Your Bag <span className="text-[#008FAB]">({totalCartNum})</span>
             </p>
-            <ul>
-              {cartItems.map((i) => (
-                <li key={i.cartItemId} className="flex gap-5 py-8 border-b-[#008FAB]">
-                  <div>
-                    <Image
-                      src={`/assets/products/${i.image}`}
-                      alt={i.name}
-                      width={154}
-                      height={154}
-                    />
-                  </div>
-                  <div>
-                    <p>{i.name}</p>
-                    <p className="mt-4">${i.price}</p>
-                  </div>
-                  <button
-                    type="button"
-                    className="text-[28px] cursor-pointer text-[#008FAB]"
-                    onClick={() => handleRemove(i.cartItemId)}
-                  >
-                    <IoCloseOutline />
-                  </button>
-                </li>
-              ))}
-            </ul>
-            {totalCartNum === 0 ? (
-              <p className="mt-8">Your Shopping Bag is empty.</p>
+            {user ? (
+              totalCartNum === 0 ? (
+                <p className="mt-8">Your Shopping Bag is empty.</p>
+              ) : (
+                <>
+                  <ul>
+                    {cartItems.map((i) => (
+                      <li key={i.cartItemId} className="flex gap-5 py-8 border-b-[#008FAB]">
+                        <div>
+                          <Image
+                            src={`/assets/shine_studio_images/${i.image}`}
+                            alt={i.name}
+                            width={154}
+                            height={154}
+                          />
+                        </div>
+                        <div>
+                          <p>{i.name}</p>
+                          <p className="mt-4">${i.price}</p>
+                        </div>
+                        <button
+                          type="button"
+                          className="text-[28px] cursor-pointer text-[#008FAB]"
+                          onClick={() => handleRemove(i.cartItemId)}
+                        >
+                          <IoCloseOutline />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/cart" className="mt-8">
+                    View Shopping Bag
+                  </Link>
+                </>
+              )
             ) : (
-              <Link href="/cart" className="mt-8">
-                View Shopping Bag
-              </Link>
+              <>
+                <p className='mt-8'>You are not logged in.</p>
+                <Link href="/login" className="mt-8">
+                  Sign In
+                </Link>
+              </>
             )}
           </div>
         </div>
