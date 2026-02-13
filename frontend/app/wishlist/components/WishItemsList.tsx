@@ -4,6 +4,7 @@ import WishiItem from './WishiItem';
 import { useAuthStore } from '@/app/store/auth.store';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useWishlistStore } from '@/app/store/wishlist.store';
 
 
 export type WishLists ={
@@ -16,6 +17,8 @@ export type WishLists ={
 
 const WishItemsList = () => {
   const user= useAuthStore(state=>state.user)
+  const wishItems = useWishlistStore(state=>state.wishItems)
+  const removeWishItem = useWishlistStore(state=>state.removeWishItem)
   const [data, setData] = useState<WishLists[]>([])
   if(!user){
     redirect("/login")
@@ -28,11 +31,13 @@ const WishItemsList = () => {
       //fetch wish list
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${userId}`)
       const data = await res.json() as WishLists[]
+      console.log(data)
       setData(data??[])
     }
+    console.log("fetching")
 
     fetchData()
-  })
+  },[wishItems])
 
   return (
     <div>

@@ -6,7 +6,7 @@ import { PiHeartFill, PiHeartThin } from 'react-icons/pi';
 import useSocketStore from '@/app/store/socket.store';
 import type { Product } from '@/app/types/products.type';
 import { useCartStore } from '@/app/store/cart.store';
-import { useWishlistStore } from '@/app/store/wishlist.store';
+import { useWishlistStore, WishItem } from '@/app/store/wishlist.store';
 import { useAuthStore } from '@/app/store/auth.store';
 import toast from 'react-hot-toast';
 
@@ -19,6 +19,11 @@ interface CartItemReturn{
   productId:Product,
   quantity:number
 }
+interface WishlistsReturnType{
+  userId:string,
+  productId:Product,
+  _id:string,
+}
 
 const ItemDetail = ({ product }: Props) => {
   const user = useAuthStore(state=>state.user)
@@ -28,12 +33,64 @@ const ItemDetail = ({ product }: Props) => {
   const setCart = useCartStore(state=>state.setCart) 
   const cartId = useCartStore(state=>state.cartId)
   const cartItems = useCartStore(state=>state.cartItems)
-  const {setWishlist,wishItems, removeWishItem } = useWishlistStore(state=>state)
+  const setWishlist = useWishlistStore(state=>state.setWishlist)
+  const wishItems = useWishlistStore(state=>state.wishItems)
+  const removeWishItem = useWishlistStore(state=>state.removeWishItem)
 
   const [quantity, setQuantity] = useState<number>(1);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  // const [isLiked, setIsLiked] = useState<boolean>(false);
 
-  const toggleWishList =()=>{
+  const toggleWishList =async()=>{
+    console.log("clicked")
+    if(!user){
+      console.log("User not exist")
+      return
+    }
+    console.log(wishItems)
+    //find matching item in wishlist
+    const find =wishItems.find(item=> item.productId===product._id)
+    console.log(find)
+    if(find){
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${find.wishlistId}`,{
+        method:"DELETE",
+      })
+
+      if(!res.ok){
+        console.log("Error removing wishlist")
+        return
+      }
+
+      const data = await res.json()
+      console.log(data)
+
+      removeWishItem(product._id)
+    }else{
+      console.log("adding to ")
+    //add it to wish list
+    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists`,{
+      method:"POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId:user.id,
+        productId:product._id
+      })
+    })
+
+    const data: WishlistsReturnType = await res.json()
+
+    const newWishItems :WishItem[]=[
+      ...wishItems,
+      {
+        wishlistId: data._id??"",
+        productId: data.productId._id??"",
+        image: data.productId.image??"",
+        name: data.productId.name??"",
+        price: data.productId.price??"",
+      }
+    ]
+    setWishlist(newWishItems)
+    }
+    
   }
 
   const addToCart = async()=>{
@@ -83,7 +140,7 @@ const ItemDetail = ({ product }: Props) => {
     if(!user) return
     //set liked and in bag
     const find = wishItems.find(i=>i.productId === product._id)
-    setIsLiked(find?true:false)
+    // setIsLiked(find?true:false)
 
     //socket
     const socketData = {
@@ -127,14 +184,19 @@ const ItemDetail = ({ product }: Props) => {
         />
 
         <div className="flex flex-col gap-4 pt-4 lg:w-[45%]">
-          <div className="flex items-center justify-end gap-4">
-            {!isLiked?
+          <div className="flex items-center justify-end gap-4"
+          >
+            {wishItems.find(i=>i.productId === product._id)===null?
             (
             <>
-            <PiHeartThin className="text-[18px]" />
+            <PiHeartThin 
+            onClick={()=>toggleWishList()}
+            className="text-[18px]" />
             Add to Wishlist
             </>):(<>
-            <PiHeartFill className='text-[18px] text-[#008FAB]'/>
+            <PiHeartFill 
+              onClick={()=>toggleWishList()}
+              className='text-[18px] text-[#008FAB]'/>
             Item In Wishlist
             </>)}
           </div>

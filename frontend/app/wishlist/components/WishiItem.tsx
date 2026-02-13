@@ -23,9 +23,12 @@ type Props = {
 
 const WishiItem = ({ item }: Props) => {
   const user = useAuthStore(state=>state.user)
-  const {removeWishItem} = useWishlistStore(state=>state)
-  const {setCart,cartItems, cartId} =useCartStore(state=>state)
+  const removeWishItem = useWishlistStore(state=>state.removeWishItem)
+  const setCart = useCartStore(state=>state.setCart)
+  const cartItems = useCartStore(state=>state.cartItems)
+  const cartId =useCartStore(state=>state.cartId)
   const [isInBag, setIsInBag] = useState<boolean>(false);
+  const [update, setUpdate] = useState<boolean>(false)
 
   const removeWishList =async () => {
     
@@ -40,6 +43,7 @@ const WishiItem = ({ item }: Props) => {
     const data = await res.json()
     console.log(data)
     removeWishItem(item.productId)
+    setUpdate(prev=>!prev)
     toast("Item removed from your wishlist")
   };
 
@@ -80,6 +84,8 @@ const WishiItem = ({ item }: Props) => {
     const inBag = cartItems.find(t=>t.productId === item.productId)
     if(inBag) setIsInBag(true)
   }, []);
+
+  useEffect(()=>{},[update])
 
   return (
     <div className="flex flex-col w-[70%] max-w-[300px] justify-center mx-auto md:pt-8">
