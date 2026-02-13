@@ -37,10 +37,6 @@ const ShoppingBagList = () => {
   const timeoutRef = useRef<NodeJS.Timeout|null>(null);
   const lastChangedItemRef = useRef<CartItem | null>(null);
 
-  if(!user){
-    redirect("/login")
-  }
-
   const addToWishList = async (item: CartItem) => {
     
     if(!user){

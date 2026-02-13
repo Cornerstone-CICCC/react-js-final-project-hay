@@ -14,10 +14,6 @@ const OrderSummary = () => {
   const [total, setTotal] = useState<number>(0);
   const [subtotal, setSubTotal] = useState<number>(0);
 
-  if(!user){
-    redirect("/")
-  }
-
   //calculate total from store
   useEffect(() => {
     const amount =cartItems.reduce((acc, curr)=>acc+= curr.price*curr.quantity,0)
