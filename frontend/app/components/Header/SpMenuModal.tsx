@@ -13,8 +13,8 @@ const SpMenuModal = ({ isOpen, onClose }: Props) => {
     <div
       className={
         isOpen
-          ? 'fixed top-0 left-0 w-full h-full transform-[translateX(0)] bg-[#22222299] transition'
-          : 'fixed top-0 left-0 w-full h-full transform-[translateX(-100vw)] transition'
+          ? 'fixed top-0 left-0 z-2 w-full h-full transform-[translateX(0)] bg-[#22222299] transition'
+          : 'fixed top-0 left-0 z-2 w-full h-full transform-[translateX(-100vw)] transition'
       }
     >
       <div className="bg-white w-[90%] h-full px-4 py-5">

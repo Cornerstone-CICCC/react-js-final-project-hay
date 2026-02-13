@@ -11,11 +11,11 @@ export interface FilterQuery {
   category: Category[];
 }
 
-type Props={
-  data:Product[]
-}
+type Props = {
+  data: Product[];
+};
 
-const ProductList = ({data}:Props) => {
+const ProductList = ({ data }: Props) => {
   const [products, setProducts] = useState<Product[]>(data);
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false);
   const [query, setQuery] = useState<FilterQuery | null>(null);
@@ -29,7 +29,6 @@ const ProductList = ({data}:Props) => {
   };
 
   useEffect(() => {
-
     if (query) {
       setProducts((prev) =>
         prev.filter(

@@ -8,7 +8,9 @@ import { IoIosMenu } from 'react-icons/io';
 import { PiHeartStraight } from 'react-icons/pi';
 import { RiUserLine } from 'react-icons/ri';
 import { SlHandbag } from 'react-icons/sl';
+import { useAuthStore } from '@/app/store/auth.store';
 import { useCartStore } from '../../store/cart.store';
+import LogoutButton from '../LogoutButton';
 import CartModal from './CartModal';
 import SearchModal from './SearchModal';
 import SpMenuModal from './SpMenuModal';
@@ -41,6 +43,8 @@ const Header = () => {
   // cart status
   const cartItems = useCartStore((s) => s.cartItems);
   const totalCartNum = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const user = useAuthStore((s) => s.user);
 
   return (
     <header>
@@ -85,9 +89,13 @@ const Header = () => {
             </button>
           </li>
           <li className="hidden md:flex">
-            <Link href="/login">
-              <RiUserLine />
-            </Link>
+            {user ? (
+              <LogoutButton />
+            ) : (
+              <Link href="/login">
+                <RiUserLine />
+              </Link>
+            )}
           </li>
           <li className="text-[20px] flex">
             <Link href="/wishlist" onMouseOver={handleWishOpen} onFocus={handleWishOpen}>

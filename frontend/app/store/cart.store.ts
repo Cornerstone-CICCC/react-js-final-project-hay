@@ -14,10 +14,12 @@ type CartItem = {
 
 type State = {
   cartItems: CartItem[];
+  cartId: string;
 };
 
 type Action = {
   setCart: (cartItems: CartItem[]) => void;
+  setCartId: (cartId: string) => void;
   clearCart: () => void;
   removeCartItem: (cartItemId: string) => void;
 };
@@ -26,7 +28,9 @@ export const useCartStore = create<State & Action>()(
   persist(
     (set) => ({
       cartItems: [],
+      cartId: '',
       setCart: (cartItems) => set({ cartItems }),
+      setCartId: (cartId) => set({ cartId }),
       clearCart: () => set({ cartItems: [] }),
       removeCartItem: (cartItemId) =>
         set((state) => ({
