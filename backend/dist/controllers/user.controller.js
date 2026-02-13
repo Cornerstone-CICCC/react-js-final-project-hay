@@ -151,6 +151,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             req.session.userId = foundUser._id;
             console.log(req.session.userId);
         }
+        const cartId = yield cart_service_1.default.getByUserId(foundUser.id);
         // Cart Items
         const cartItems = yield cart_service_1.default.getUserCartWithItems(foundUser.id);
         // Wishlist Items
@@ -161,6 +162,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 userId: foundUser.id,
                 firstname: foundUser.firstname,
             },
+            //cartId: cartItems.id,
             cartItems,
             wishlist,
         });

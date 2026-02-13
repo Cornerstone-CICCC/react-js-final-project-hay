@@ -21,7 +21,7 @@ const wishlist_route_1 = __importDefault(require("./routes/wishlist.route"));
 const app = (0, express_1.default)();
 //Middleware
 app.use((0, cors_1.default)({
-    origin: "*",
+    origin: "http://localhost:3000",
     credentials: true,
 }));
 if (!process.env.COOKIE_PRIMARY_KEY || !process.env.COOKIE_SECONDARY_KEY) {
@@ -49,7 +49,8 @@ app.use((req, res, next) => {
 const server = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: "*",
+        origin: "http://localhost:3000",
+        credentials: true,
     },
 });
 //start server
