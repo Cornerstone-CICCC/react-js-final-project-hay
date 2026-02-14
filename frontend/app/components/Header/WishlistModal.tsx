@@ -60,8 +60,11 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
               ) : (
                 <>
                   <ul>
-                    {wishItems.map((i) => (
-                      <li key={`h_${i.productId}`} className="flex gap-5 py-8 border-b-[#008FAB]">
+                    {wishItems.map((i, index) => (
+                      <li
+                        key={`h_wish_${i.productId}_${index}`}
+                        className="flex gap-5 py-8 border-b-[#008FAB]"
+                      >
                         <div>
                           <Image
                             src={`/assets/shine_studio_images/${i.image}`}
@@ -84,7 +87,7 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/wishlist" className="mt-8">
+                  <Link href="/wishlist" onClick={onClose} className="mt-8">
                     View Wishlist
                   </Link>
                 </>
@@ -92,7 +95,7 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
             ) : (
               <>
                 <p className="mt-8">You are not logged in.</p>
-                <Link href="/login" className="mt-8">
+                <Link href="/login" onClick={onClose} className="mt-8">
                   Sign In
                 </Link>
               </>

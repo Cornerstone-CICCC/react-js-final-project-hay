@@ -6,21 +6,35 @@ import { Product } from '../types/products.type';
 let socketInstance: Socket | null = null;
 const URL = process.env.NEXT_PUBLIC_ENDPOINT;
 
-export interface TrendingProducts{
-  results:{
-    productNum:number, 
-    productDetail:Product
-  }
+export type TrendingProductDetail = {
+  name: string;
+  price: number;
+  image: string;
+};
+export interface TrendingProductItem {
+  productId: string;
+  productNum: number;
+  productDetail: TrendingProductDetail;
+}
+
+interface initialItem {
+  _id: {
+    _id: string;
+    name: string;
+    price: number;
+    image: string;
+  };
+  count: number;
 }
 interface SocketStoreType {
   isConnected: boolean;
   shopperCounter: number | null;
-  trendingProducts:TrendingProducts|null
+  trendingProducts: TrendingProductItem[];
   initializeSocket: () => void;
   disconnect: () => void;
   joinItem: (data: { productId: string; userId: string }) => void;
   leaveItem: (data: { productId: string; userId: string }) => void;
-  likedItem:(data:{productId:string})=>void;
+  likedItem: (data: { productId: string }) => void;
   currentProductId: string | null;
 }
 
@@ -30,7 +44,7 @@ const useSocketStore = create<SocketStoreType>()(
       shopperCounter: null,
       isConnected: false,
       currentProductId: null,
-      trendingProducts:null,
+      trendingProducts: [],
 
       // Initialize socket connection
       initializeSocket: () => {
@@ -50,22 +64,53 @@ const useSocketStore = create<SocketStoreType>()(
           set({ isConnected: false });
         });
 
+        socketInstance.on('initialTrending', (data: initialItem[]) => {
+          // console.log("Initial", data);
+          const formatted: TrendingProductItem[] = data.map((item) => ({
+            productId: item._id._id,
+            productNum: item.count,
+            productDetail: {
+              name: item._id.name,
+              price: item._id.price,
+              image: item._id.image,
+            },
+          }));
+          set({ trendingProducts: formatted });
+          // console.log("Formatted:", formatted)
+        });
+
         // Listen for cart updates from other clients/sessions
         socketInstance.on('currentShoppers', (data: { productId: string; count: number }) => {
           console.log(data);
           set({ shopperCounter: data.count });
         });
 
-        socketInstance.on('ProductNumAndDetail',(data:{
-          productId:string,
-          results:{
-            productNum:number, 
-            productDetail:Product
-          }
-        })=>{
-          console.log("trending result:",data)
-          set({trendingProducts:data})
-        })
+        socketInstance.on(
+          'ProductNumAndDetail',
+          (data: {
+            productId: string;
+            results: {
+              productNum: number;
+              productDetail: TrendingProductDetail;
+            };
+          }) => {
+            console.log('trending top 4:', data);
+            set((state) => {
+              const updated = [
+                ...state.trendingProducts.filter((item) => item.productId !== data.productId),
+                {
+                  productId: data.productId,
+                  productNum: data.results.productNum,
+                  productDetail: data.results.productDetail,
+                },
+              ];
+              updated.sort((a, b) => b.productNum - a.productNum);
+              return {
+                trendingProducts: updated.slice(0, 4),
+              };
+            });
+          },
+        );
 
         return socketInstance;
       },
@@ -104,7 +149,6 @@ const useSocketStore = create<SocketStoreType>()(
       },
 
       leaveItem: (data: { productId: string; userId: string }) => {
-
         if (!socketInstance) {
           console.log('there is no socket');
           return;
@@ -115,14 +159,13 @@ const useSocketStore = create<SocketStoreType>()(
         set({ shopperCounter: null });
       },
 
-      likedItem:(data:{productId:string})=>{
-        if(!socketInstance){
-          console.log("no socket found")
-          return
+      likedItem: (data: { productId: string }) => {
+        if (!socketInstance) {
+          console.log('no socket found');
+          return;
         }
-        socketInstance.emit("updateWish", data)
-      }
-
+        socketInstance.emit('updateWish', data);
+      },
     }),
     {
       name: 'socket-storage',
