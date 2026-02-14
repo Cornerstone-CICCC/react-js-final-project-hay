@@ -60,8 +60,11 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
               ) : (
                 <>
                   <ul>
-                    {wishItems.map((i) => (
-                      <li key={`h_${i.productId}`} className="flex gap-5 py-8 border-b-[#008FAB]">
+                    {wishItems.map((i, index) => (
+                      <li
+                        key={`h_wish_${i.productId}_${index}`}
+                        className="flex gap-5 py-8 border-b-[#008FAB]"
+                      >
                         <div>
                           <Image
                             src={`/assets/shine_studio_images/${i.image}`}
