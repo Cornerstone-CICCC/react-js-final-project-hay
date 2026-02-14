@@ -1,46 +1,43 @@
-import { product } from '@/app/products/dummy';
+"use client"
 import type { WishList } from '@/app/types/wishList.types';
 import WishiItem from './WishiItem';
+import { useAuthStore } from '@/app/store/auth.store';
+import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useWishlistStore } from '@/app/store/wishlist.store';
+
+
+export type WishLists ={
+  wishlistId:string,
+  productId:string,
+  image:string,
+  name:string,
+  price:number
+}
 
 const WishItemsList = () => {
+  const user= useAuthStore(state=>state.user)
+  const wishItems = useWishlistStore(state=>state.wishItems)
+  const removeWishItem = useWishlistStore(state=>state.removeWishItem)
+  const [data, setData] = useState<WishLists[]>([])
+  if(!user){
+    redirect("/login")
+  }
   //get userId from store
+  const userId = user.id
 
-  //fetch wish list
+  useEffect(()=>{
+    const fetchData = async()=>{
+      //fetch wish list
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${userId}`)
+      const data = await res.json() as WishLists[]
+      console.log(data)
+      setData(data??[])
+    }
+    console.log("fetching")
 
-  const data: WishList[] = [
-    {
-      _id: '12',
-      userId: '22',
-      productId: {
-        _id: '1',
-        ...product,
-      },
-    },
-    {
-      _id: '1',
-      userId: '22',
-      productId: {
-        _id: '2',
-        ...product,
-      },
-    },
-    {
-      _id: '1',
-      userId: '212',
-      productId: {
-        _id: '3',
-        ...product,
-      },
-    },
-    {
-      _id: '1',
-      userId: '226',
-      productId: {
-        _id: '8',
-        ...product,
-      },
-    },
-  ];
+    fetchData()
+  },[wishItems])
 
   return (
     <div>
@@ -59,7 +56,7 @@ const WishItemsList = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 max-w-350 mx-auto py-8 md:py-4 gap-10 md:gap-4 px-6 ">
         {data.map((item) => (
-          <WishiItem item={item} key={`wish-${item._id}`} />
+          <WishiItem item={item} key={`wish-${item.wishlistId}`} />
         ))}
       </div>
     </div>

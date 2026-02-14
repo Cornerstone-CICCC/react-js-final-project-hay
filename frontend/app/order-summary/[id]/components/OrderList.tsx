@@ -5,29 +5,20 @@ import { useEffect, useState } from 'react';
 import { product } from '@/app/products/dummy';
 import type { Product } from '@/app/types/products.type';
 
-type Props = {};
-interface OrderItem extends Product {
-  qty: number;
+type Props = {
+  data:OrderItem[]
+};
+export interface OrderItem extends Product {
+  quantity: number;
 }
 
-const OrderList = (props: Props) => {
-  const [orderList, setOrderList] = useState<OrderItem[]>([]);
+const OrderList = ({data}: Props) => {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
 
   useEffect(() => {
-    setOrderList([
-      {
-        ...product,
-        _id: '1',
-        qty: 2,
-      },
-    ]);
-  }, []);
-
-  useEffect(() => {
-    const newSubtotal = orderList.reduce((acc, curr) => acc + curr.price * curr.qty, 0);
+    const newSubtotal = data.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
 
     setSubtotal(newSubtotal);
     let total: number = newSubtotal;
@@ -36,34 +27,38 @@ const OrderList = (props: Props) => {
     }
 
     setTotal(total);
-  }, [orderList, discount]);
+  }, [data, discount]);
 
   return (
     <div className="md:w-[70%] max-w-225 mx-auto">
-      <h2 className="font-bold text-2xl text-center">Order Summary</h2>
+      <h2 className="font-bold text-2xl text-center">Order Confirmation</h2>
       <div className="p-6">
-        {orderList.map((item) => (
+        {data.map((item) => (
           <div
             key={item._id}
             className="flex md:gap-20 gap-6 py-6 border-b border-[rgba(0,143,171,0.3)] "
           >
-            <Image
-              src={item.image}
-              width={150}
-              height={300}
-              alt={item.name.slice(0, 10)}
-              className="md:w-[250px]"
-            />
+            <div
+            className='basis-[250px]'>
+              <Image
+                src={`/assets/shine_studio_images/${item.image}`}
+                width={250}
+                height={250}
+                alt={item.name.slice(0, 10)}
+                className="aspect-square"
+              />
+            </div>
 
-            <div className="flex flex-col gap-20 h-full my-auto">
-              <h2>{item.name}</h2>
+            <div className="flex flex-col gap-20 h-full my-auto basis-43 sm:basis-120 lg:basis-250">
+              <h2
+              className='text-[12px] sm:text-lg'>{item.name}</h2>
 
               <div className="flex justify-between">
                 <div>
                   Qty
-                  <span className="ps-5">{item.qty}</span>
+                  <span className="ps-5">{item.quantity}</span>
                 </div>
-                <div className="font-bold">$ {item.price * item.qty}</div>
+                <div className="font-bold">$ {item.price * item.quantity}</div>
               </div>
             </div>
           </div>

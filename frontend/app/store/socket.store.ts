@@ -1,7 +1,7 @@
 import { io, type Socket } from 'socket.io-client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Product } from '../types/products.type';
+import { Product } from '../types/products.type';
 
 let socketInstance: Socket | null = null;
 const URL = process.env.NEXT_PUBLIC_ENDPOINT;
