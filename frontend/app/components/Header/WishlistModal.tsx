@@ -84,7 +84,7 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/wishlist" className="mt-8">
+                  <Link href="/wishlist" onClick={onClose} className="mt-8">
                     View Wishlist
                   </Link>
                 </>
@@ -92,7 +92,7 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
             ) : (
               <>
                 <p className="mt-8">You are not logged in.</p>
-                <Link href="/login" className="mt-8">
+                <Link href="/login" onClick={onClose} className="mt-8">
                   Sign In
                 </Link>
               </>

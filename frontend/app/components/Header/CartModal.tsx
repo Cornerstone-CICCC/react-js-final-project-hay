@@ -82,7 +82,7 @@ const CartModal = ({ isOpen, onClose }: Props) => {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/cart" className="mt-8">
+                  <Link href="/shopping-bag" onClick={onClose} className="mt-8">
                     View Shopping Bag
                   </Link>
                 </>
@@ -90,7 +90,7 @@ const CartModal = ({ isOpen, onClose }: Props) => {
             ) : (
               <>
                 <p className="mt-8">You are not logged in.</p>
-                <Link href="/login" className="mt-8">
+                <Link href="/login" onClick={onClose} className="mt-8">
                   Sign In
                 </Link>
               </>
