@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import {Toaster} from 'react-hot-toast'
 import { Italiana, Julius_Sans_One, Nunito_Sans } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
 import './globals.css';
@@ -38,8 +38,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunitoSans.className} antialiased`}>
-        <Toaster/>
-        <SocketApp/>
+        <Toaster />
+        <SocketApp />
         <Header />
         <main className="pb-16 md:pb-32">{children}</main>
         <Footer />

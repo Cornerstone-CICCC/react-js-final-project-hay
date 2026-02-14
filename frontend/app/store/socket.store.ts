@@ -1,26 +1,26 @@
 import { io, type Socket } from 'socket.io-client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Product } from '../types/products.type';
+import type { Product } from '../types/products.type';
 
 let socketInstance: Socket | null = null;
 const URL = process.env.NEXT_PUBLIC_ENDPOINT;
 
-export interface TrendingProducts{
-  results:{
-    productNum:number, 
-    productDetail:Product
-  }
+export interface TrendingProducts {
+  results: {
+    productNum: number;
+    productDetail: Product;
+  };
 }
 interface SocketStoreType {
   isConnected: boolean;
   shopperCounter: number | null;
-  trendingProducts:TrendingProducts|null
+  trendingProducts: TrendingProducts | null;
   initializeSocket: () => void;
   disconnect: () => void;
   joinItem: (data: { productId: string; userId: string }) => void;
   leaveItem: (data: { productId: string; userId: string }) => void;
-  likedItem:(data:{productId:string})=>void;
+  likedItem: (data: { productId: string }) => void;
   currentProductId: string | null;
 }
 
@@ -30,7 +30,7 @@ const useSocketStore = create<SocketStoreType>()(
       shopperCounter: null,
       isConnected: false,
       currentProductId: null,
-      trendingProducts:null,
+      trendingProducts: null,
 
       // Initialize socket connection
       initializeSocket: () => {
@@ -56,16 +56,19 @@ const useSocketStore = create<SocketStoreType>()(
           set({ shopperCounter: data.count });
         });
 
-        socketInstance.on('ProductNumAndDetail',(data:{
-          productId:string,
-          results:{
-            productNum:number, 
-            productDetail:Product
-          }
-        })=>{
-          console.log("trending result:",data)
-          set({trendingProducts:data})
-        })
+        socketInstance.on(
+          'ProductNumAndDetail',
+          (data: {
+            productId: string;
+            results: {
+              productNum: number;
+              productDetail: Product;
+            };
+          }) => {
+            console.log('trending result:', data);
+            set({ trendingProducts: data });
+          },
+        );
 
         return socketInstance;
       },
@@ -104,7 +107,6 @@ const useSocketStore = create<SocketStoreType>()(
       },
 
       leaveItem: (data: { productId: string; userId: string }) => {
-
         if (!socketInstance) {
           console.log('there is no socket');
           return;
@@ -115,14 +117,13 @@ const useSocketStore = create<SocketStoreType>()(
         set({ shopperCounter: null });
       },
 
-      likedItem:(data:{productId:string})=>{
-        if(!socketInstance){
-          console.log("no socket found")
-          return
+      likedItem: (data: { productId: string }) => {
+        if (!socketInstance) {
+          console.log('no socket found');
+          return;
         }
-        socketInstance.emit("updateWish", data)
-      }
-
+        socketInstance.emit('updateWish', data);
+      },
     }),
     {
       name: 'socket-storage',

@@ -1,5 +1,5 @@
 'use client';
-import { type ChangeEvent, type SubmitEvent, useState } from 'react';
+import { type ChangeEvent, type SubmitEvent, useEffect, useState } from 'react';
 import type { Availability, Category } from '@/app/types/products.type';
 import {
   Accordion,
@@ -12,9 +12,10 @@ import type { FilterQuery } from './ProductList';
 type Props = {
   setQuery: (newQuery: FilterQuery) => void;
   onClose: () => void;
+  categoryPage?:string
 };
 
-const FilterModal = ({ setQuery, onClose }: Props) => {
+const FilterModal = ({ setQuery, onClose ,categoryPage}: Props) => {
   const [formData, setFormData] = useState<FilterQuery>({
     availability: ['in-stock', 'out-stock'],
     category: ['necklaces', 'earrings', 'rings', 'bracelets', 'ankle-wear'],
@@ -92,8 +93,18 @@ const FilterModal = ({ setQuery, onClose }: Props) => {
     onClose();
   };
 
+  useEffect(()=>{
+    if(!categoryPage) return
+
+    setFormData({
+      availability: ['in-stock', 'out-stock'],
+      category:[categoryPage as Category]
+    })
+
+  },[categoryPage])
+
   return (
-    <div className="absolute z-10 top-10 left-0 w-full h-screen bg-black/30">
+    <div className="absolute z-10 top-[100%] left-0 w-full h-screen bg-black/30">
       <div className="bg-white max-w-[97vw] py-4 md:w-[30%] md:max-w-[350px] md:p-6">
         <form onSubmit={handleSubmit}>
           <Accordion
@@ -120,7 +131,7 @@ const FilterModal = ({ setQuery, onClose }: Props) => {
                 </div>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem key="category" value="category">
+            {!categoryPage&&<AccordionItem key="category" value="category">
               <AccordionTrigger className="font-bold">Category</AccordionTrigger>
               <AccordionContent>
                 <div className="flex flex-col gap-2">
@@ -138,7 +149,7 @@ const FilterModal = ({ setQuery, onClose }: Props) => {
                   ))}
                 </div>
               </AccordionContent>
-            </AccordionItem>
+            </AccordionItem>}
           </Accordion>
           <div className="w-full my-4 flex justify-center">
             <button

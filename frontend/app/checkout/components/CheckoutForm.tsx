@@ -1,28 +1,28 @@
 'use client';
 
-import { useAuthStore } from '@/app/store/auth.store';
-import { useCartStore } from '@/app/store/cart.store';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { type Appearance, loadStripe } from '@stripe/stripe-js';
 import { stat } from 'fs';
 import { redirect } from 'next/navigation';
 import { type SubmitEvent, useState } from 'react';
+import { useAuthStore } from '@/app/store/auth.store';
+import { useCartStore } from '@/app/store/cart.store';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
-interface Cart{
-  _id:string,
-  userId:string,
-  status:"active"|"inactive"
+interface Cart {
+  _id: string;
+  userId: string;
+  status: 'active' | 'inactive';
 }
 
 const PaymentForm = () => {
   const url = 'http://localhost:3000';
   //old cartId
-  const cartId = useCartStore(state=>state.cartId)
-  const setCartId= useCartStore(state=>state.setCartId)
-  const clearCart = useCartStore(state=>state.clearCart)
+  const cartId = useCartStore((state) => state.cartId);
+  const setCartId = useCartStore((state) => state.setCartId);
+  const clearCart = useCartStore((state) => state.clearCart);
 
-  const user = useAuthStore(state=>state.user)
+  const user = useAuthStore((state) => state.user);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -30,8 +30,8 @@ const PaymentForm = () => {
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  if(!user || !cartId){
-    redirect("/")
+  if (!user || !cartId) {
+    redirect('/');
   }
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
@@ -57,30 +57,28 @@ const PaymentForm = () => {
     }
 
     //deactive cart
-    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/carts/inactive`,{
-      method:"POST",
+    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/carts/inactive`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId:user.id,
-        cartId:cartId
-      })
-    })
+        userId: user.id,
+        cartId: cartId,
+      }),
+    });
 
-    if(!res.ok){
-      console.log("Error deactivating cart")
-      return
+    if (!res.ok) {
+      console.log('Error deactivating cart');
+      return;
     }
-    const data :
-    {
-      inactiveCart:Cart
-      newCart:Cart
-      message:string
-
-    }= await res.json()
+    const data: {
+      inactiveCart: Cart;
+      newCart: Cart;
+      message: string;
+    } = await res.json();
 
     //set new cartId to store
-    setCartId(data.newCart._id)
-    clearCart()
+    setCartId(data.newCart._id);
+    clearCart();
     setIsLoading(false);
   };
 

@@ -1,25 +1,27 @@
 'use client';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
-import { PiHandbagSimpleFill, PiHandbagThin, PiHeartFill, PiHeartThin } from 'react-icons/pi';
-import type { Product } from '@/app/types/products.type';
-import { CartItem, useCartStore } from '@/app/store/cart.store';
-import { useWishlistStore, WishItem } from '@/app/store/wishlist.store';
-import { useAuthStore } from '@/app/store/auth.store';
 import { useEffect, useState } from 'react';
+import { PiHandbagSimpleFill, PiHandbagThin, PiHeartFill, PiHeartThin } from 'react-icons/pi';
+import { useAuthStore } from '@/app/store/auth.store';
+import { type CartItem, useCartStore } from '@/app/store/cart.store';
 import useSocketStore from '@/app/store/socket.store';
+import { useWishlistStore, type WishItem } from '@/app/store/wishlist.store';
+import type { Product } from '@/app/types/products.type';
+import toast from 'react-hot-toast';
+import Link from 'next/link';
 
-interface CartItemReturn{
-  _id:string,
-  cartId:string,
-  productId:Product,
-  quantity:number
+interface CartItemReturn {
+  _id: string;
+  cartId: string;
+  productId: Product;
+  quantity: number;
 }
 
-interface WishlistsReturnType{
-  userId:string,
-  productId:Product,
-  _id:string,
+interface WishlistsReturnType {
+  userId: string;
+  productId: Product;
+  _id: string;
 }
 type Props = {
   product: Product;
@@ -27,156 +29,207 @@ type Props = {
 
 const ItemCard = ({ product }: Props) => {
   //zustand
-  const likedItem = useSocketStore(state=>state.likedItem)
-  const user = useAuthStore(state=>state.user)
-  const cartId = useCartStore(state=>state.cartId)
-  const setCart = useCartStore(state=>state.setCart)
-  const cartItems = useCartStore(state=>state.cartItems)
-  const wishItems = useWishlistStore(state=>state.wishItems)
-  const setWishlist = useWishlistStore(state=>state.setWishlist)
-  const removeWishItem = useWishlistStore(state=>state.removeWishItem)
+  const likedItem = useSocketStore((state) => state.likedItem);
+  const user = useAuthStore((state) => state.user);
+  const cartId = useCartStore((state) => state.cartId);
+  const setCart = useCartStore((state) => state.setCart);
+  const cartItems = useCartStore((state) => state.cartItems);
+  const wishItems = useWishlistStore((state) => state.wishItems);
+  const setWishlist = useWishlistStore((state) => state.setWishlist);
+  const removeWishItem = useWishlistStore((state) => state.removeWishItem);
 
-  const [isInBag, setIsInBag] = useState<CartItem|null>(null)
+  const [isInBag, setIsInBag] = useState<CartItem | null>(null);
 
-  useEffect(()=>{
-    const found = cartItems.find(item=> item.productId===product._id)
-    const wfound= wishItems.find(item=>item.productId===product._id)
-    console.log(wfound)
-    if(found){
-      setIsInBag(found)
+  useEffect(() => {
+    const found = cartItems.find((item) => item.productId === product._id);
+    const wfound = wishItems.find((item) => item.productId === product._id);
+    console.log(wfound);
+    if (found) {
+      setIsInBag(found);
     }
-  },[product])
+  }, [product]);
 
-  const handleToggleCart = async() => {
+  const handleToggleCart = async () => {
+    if(!user){
+      toast.custom((t) => (
+        <div
+          className={` max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex`}
+        >
+          <div
+          className='py-4 px-6 justify-self-center flex-1'>
+            Please 
+            <Link
+            href="/login"
+            className='px-2 font-bold underline'>Login or Signup</Link>
+            to shop
+          </div>
+          <div className="flex border-l border-gray-200">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="cursor-pointer w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      ),{duration:1500})
+      return
+    }
     if (product.stock === 0) return;
 
-    if(isInBag){
-      await removeFromCart(isInBag)
-      setIsInBag(null)
-    }else{
-      const newCartItem = await addToCart()
-      setIsInBag(newCartItem?newCartItem:null)
+    if (isInBag) {
+      await removeFromCart(isInBag);
+      setIsInBag(null);
+    } else {
+      const newCartItem = await addToCart();
+      setIsInBag(newCartItem ? newCartItem : null);
     }
   };
 
-  const addToCart = async()=>{
+  const addToCart = async () => {
     //api request
-    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartitems/update`,{
-      method:"POST",
+    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartitems/update`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         cartId,
-        productId:product._id,
-        quantity:1
-      })
-    })
+        productId: product._id,
+        quantity: 1,
+      }),
+    });
 
-    if(!res.ok){
-      console.log("Error making order")
-      return
+    if (!res.ok) {
+      console.log('Error making order');
+      return;
     }
-    const data = await res.json() as CartItemReturn
+    const data = (await res.json()) as CartItemReturn;
 
     //update store
-    const newCartItem:CartItem= {
-        cartItemId: data._id,
-        productId: data.productId._id,
-        image: data.productId.image,
-        name: data.productId.name,
-        price: data.productId.price,
-        stock: data.productId.stock,
-        cartId: data.cartId,
-        quantity: data.quantity
+    const newCartItem: CartItem = {
+      cartItemId: data._id,
+      productId: data.productId._id,
+      image: data.productId.image,
+      name: data.productId.name,
+      price: data.productId.price,
+      stock: data.productId.stock,
+      cartId: data.cartId,
+      quantity: data.quantity,
+    };
+    const newCart = [...cartItems, newCartItem];
 
-      }
-    const newCart =[
-      ...cartItems,
-      newCartItem
-    ]
+    setCart(newCart);
+    return newCartItem;
+  };
 
-    setCart(newCart)
-    return newCartItem
-  }
+  const removeFromCart = async (foundItem: CartItem) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_ENDPOINT}/cartitems/${foundItem.cartItemId}`,
+      {
+        method: 'DELETE',
+      },
+    );
 
-  const removeFromCart = async(foundItem:CartItem)=>{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartitems/${foundItem.cartItemId}`,{
-      method:"DELETE"
-    })
-
-    if(!res.ok){
-      console.log("Error deleting cart item")
-      return
+    if (!res.ok) {
+      console.log('Error deleting cart item');
+      return;
     }
-    const data :{
-      _id:string,
-      cartId:string,
-      productId:string,
-      quantity:number
-    }= await res.json()
+    const data: {
+      _id: string;
+      cartId: string;
+      productId: string;
+      quantity: number;
+    } = await res.json();
 
     //remove from cart
-    const removedCartItems = cartItems.filter(item=>item.cartItemId!==data._id)
-    setCart(removedCartItems)
-  }
-  const handleToggleWishList = async() => {
-    //check if wish exist
-    const find = wishItems.find(item => item.productId === product._id)
+    const removedCartItems = cartItems.filter((item) => item.cartItemId !== data._id);
+    setCart(removedCartItems);
+  };
+  const handleToggleWishList = async () => {
 
-    if(find){
-      //remove
-      removeFromWishList(find)
-    }else{
-      await addToWishList()
+    if(!user){
+      toast.custom((t) => (
+        <div
+          className={` max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex`}
+        >
+          <div
+          className='py-4 px-6 justify-self-center flex-1'>
+            Let's  
+            <Link
+            href="/login"
+            className='px-2 font-bold underline'>become a member</Link>
+            to use wishlist feature
+          </div>
+          <div className="flex border-l border-gray-200">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="cursor-pointer w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      ),{duration:1500})
+      return
     }
+    //check if wish exist
+    const find = wishItems.find((item) => item.productId === product._id);
 
+    if (find) {
+      //remove
+      removeFromWishList(find);
+    } else {
+      await addToWishList();
+    }
   };
 
   const addToWishList = async () => {
-      if(!user){
-        console.log("User not exist")
-        return
-      }
-      //add it to wish list
-      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists`,{
-        method:"POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId:user.id,
-          productId:product._id
-        })
-      })
-  
-      const data: WishlistsReturnType = await res.json()
-      
-      const newWishItems :WishItem[]=[
-        ...wishItems,
-        {
-          wishlistId: data._id??"",
-          productId: data.productId._id??"",
-          image: data.productId.image??"",
-          name: data.productId.name??"",
-          price: data.productId.price??"",
-        }
-      ]
+    if (!user) {
+      console.log('User not exist');
+      return;
+    }
+    //add it to wish list
+    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: user.id,
+        productId: product._id,
+      }),
+    });
 
-      likedItem({productId:data.productId._id})
-      setWishlist(newWishItems)
-    };
+    const data: WishlistsReturnType = await res.json();
 
-  const removeFromWishList = async(wishItem:WishItem)=>{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${wishItem.wishlistId}`,{
-        method:"DELETE",
-      })
-    if(!res.ok){
-      console.log("error deleting wish item")
-      return
+    const newWishItems: WishItem[] = [
+      ...wishItems,
+      {
+        wishlistId: data._id ?? '',
+        productId: data.productId._id ?? '',
+        image: data.productId.image ?? '',
+        name: data.productId.name ?? '',
+        price: data.productId.price ?? '',
+      },
+    ];
+
+    likedItem({ productId: data.productId._id });
+    setWishlist(newWishItems);
+  };
+
+  const removeFromWishList = async (wishItem: WishItem) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${wishItem.wishlistId}`,
+      {
+        method: 'DELETE',
+      },
+    );
+    if (!res.ok) {
+      console.log('error deleting wish item');
+      return;
     }
 
-    const data= await res.json()
-    console.log(data)
-    removeWishItem(wishItem.productId)
-  
-  }
+    const data = await res.json();
+    console.log(data);
+    removeWishItem(wishItem.productId);
+  };
 
   const directItemPage = () => {
     redirect(`/products/${product._id}`);
@@ -203,13 +256,15 @@ const ItemCard = ({ product }: Props) => {
 
           <div className="flex gap-2 items-center">
             <div className="cursor-pointer" onClick={handleToggleWishList}>
-              {wishItems.find(item=>item.productId===product._id)!==undefined? 
-              <PiHeartFill className="text-[#008FAB]" /> : <PiHeartThin />}
+              {wishItems.find((item) => item.productId === product._id) !== undefined ? (
+                <PiHeartFill className="text-[#008FAB]" />
+              ) : (
+                <PiHeartThin />
+              )}
             </div>
 
             <div className="cursor-pointer" onClick={handleToggleCart}>
-              {isInBag ? 
-              <PiHandbagSimpleFill className="text-[#008FAB]" /> : <PiHandbagThin />}
+              {isInBag ? <PiHandbagSimpleFill className="text-[#008FAB]" /> : <PiHandbagThin />}
             </div>
           </div>
         </div>

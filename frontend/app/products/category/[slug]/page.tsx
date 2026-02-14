@@ -1,40 +1,39 @@
 import Image from 'next/image';
-import { juliusSansOne } from '@/app/layout'; 
-import ProductList from '../../components/ProductList';
-import { Product } from '@/app/types/products.type'; 
 import { redirect } from 'next/navigation';
+import { juliusSansOne } from '@/app/layout';
+import type { Product } from '@/app/types/products.type';
+import ProductList from '../../components/ProductList';
 
-type Props={
-  params:{
-    slug:string
-  }
-}
+type Props = {
+  params: {
+    slug: string;
+  };
+};
 
-const page =async ({params}:Props) => {
-  const {slug} = await params
+const page = async ({ params }: Props) => {
+  const { slug } = await params;
   const image = '/assets/products/products_headPic.svg';
-  const headtext = slug.toUpperCase()
-  console.log(slug)
+  const headtext = slug.toUpperCase();
 
-  const categories= ['necklaces', 'earrings', 'rings', 'bracelets', 'ankle-wear']
+  const categories = ['necklaces', 'earrings', 'rings', 'bracelets', 'ankle-wear'];
 
-  if(!categories.includes(slug)){
-    redirect("/products")
+  if (!categories.includes(slug)) {
+    redirect('/products');
   }
 
-  let data:Product[]
+  let data: Product[];
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/products`)
-  
-  if(!res.ok){
-    console.log("Error fetching data")
-    data=[]
+  const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/products`);
+
+  if (!res.ok) {
+    console.log('Error fetching data');
+    data = [];
   }
-   data = await res.json()
+  data = await res.json();
 
-   //filter data
-   const filteredData = data.filter(item=>item.category===slug)
-  
+  //filter data
+  const filteredData = data.filter((item) => item.category === slug);
+
   return (
     <div className="max-w-[2000px] mx-auto">
       <div className="relative">
@@ -53,7 +52,7 @@ const page =async ({params}:Props) => {
         </div>
       </div>
 
-      <ProductList data={filteredData}/>
+      <ProductList data={filteredData} categoryPage={slug}/>
     </div>
   );
 };
