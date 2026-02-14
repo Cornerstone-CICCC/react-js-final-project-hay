@@ -78,7 +78,7 @@ const Header = () => {
           </menu>
         </nav>
         <ul className="flex gap-4 md:gap-5 md:items-center">
-          <li className="hidden md:flex">
+          <li className="hidden md:text-[20px] md:flex">
             <button
               type="button"
               className="cursor-pointer"
@@ -88,7 +88,7 @@ const Header = () => {
               <FiSearch />
             </button>
           </li>
-          <li className="hidden md:flex">
+          <li className="hidden md:text-[20px] md:flex">
             {user ? (
               <LogoutButton />
             ) : (
