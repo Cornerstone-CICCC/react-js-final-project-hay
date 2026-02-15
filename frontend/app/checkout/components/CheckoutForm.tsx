@@ -50,7 +50,7 @@ const PaymentForm = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: user.id,
+        userId: user.userId,
         cartId: cartId,
       }),
     });

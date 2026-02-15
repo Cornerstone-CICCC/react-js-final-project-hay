@@ -1,5 +1,4 @@
 'use client';
-import { redirect } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 import { useAuthStore } from '@/app/store/auth.store';
 import { useWishlistStore } from '@/app/store/wishlist.store';
@@ -25,8 +24,8 @@ const WishItemsList = () => {
     const fetchData = async () => {
       //fetch wish list
       if(!user) return
-      console.log(user.id)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${user?.id}`);
+      console.log(user.userId)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${user?.userId}`);
       const data = (await res.json()) as WishLists[];
       console.log(data);
       setData(data?data:[]);

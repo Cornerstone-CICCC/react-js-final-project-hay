@@ -93,7 +93,7 @@ const ItemDetail = ({ product }: Props) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: user.id,
+          userId: user.userId,
           productId: product._id,
         }),
       });
@@ -195,7 +195,7 @@ const ItemDetail = ({ product }: Props) => {
     //socket
     const socketData = {
       productId: product._id,
-      userId: user.id,
+      userId: user.userId,
     };
 
     joinItem(socketData);
