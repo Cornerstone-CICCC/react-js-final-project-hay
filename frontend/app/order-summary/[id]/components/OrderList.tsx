@@ -4,18 +4,23 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { product } from '@/app/products/dummy';
 import type { Product } from '@/app/types/products.type';
+import { useCartStore } from '@/app/store/cart.store';
+import { useAuthStore } from '@/app/store/auth.store';
 
 type Props = {
-  data:OrderItem[]
+  data: OrderItem[];
 };
 export interface OrderItem extends Product {
   quantity: number;
 }
 
-const OrderList = ({data}: Props) => {
+const OrderList = ({ data }: Props) => {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
+
+  const useId = useAuthStore(s=>s.user?.id)
+  const cartId = useCartStore(setDiscount=>setDiscount.cartId)
 
   useEffect(() => {
     const newSubtotal = data.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
@@ -29,6 +34,10 @@ const OrderList = ({data}: Props) => {
     setTotal(total);
   }, [data, discount]);
 
+  useEffect(()=>{
+
+  },[useId, cartId])
+
   return (
     <div className="md:w-[70%] max-w-225 mx-auto">
       <h2 className="font-bold text-2xl text-center">Order Confirmation</h2>
@@ -38,8 +47,7 @@ const OrderList = ({data}: Props) => {
             key={item._id}
             className="flex md:gap-20 gap-6 py-6 border-b border-[rgba(0,143,171,0.3)] "
           >
-            <div
-            className='basis-[250px]'>
+            <div className="basis-[250px]">
               <Image
                 src={`/assets/shine_studio_images/${item.image}`}
                 width={250}
@@ -50,8 +58,7 @@ const OrderList = ({data}: Props) => {
             </div>
 
             <div className="flex flex-col gap-20 h-full my-auto basis-43 sm:basis-120 lg:basis-250">
-              <h2
-              className='text-[12px] sm:text-lg'>{item.name}</h2>
+              <h2 className="text-[12px] sm:text-lg">{item.name}</h2>
 
               <div className="flex justify-between">
                 <div>

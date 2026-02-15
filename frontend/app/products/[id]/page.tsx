@@ -13,10 +13,9 @@ type Props = {
 const page = async ({ params }: Props) => {
   const { id } = await params;
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/products/${id}`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/products/${id}`);
 
-  const item = await res.json()
-
+  const item = await res.json();
 
   return (
     <div className="px-6 py-8">

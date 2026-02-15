@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { TbAdjustmentsHorizontal } from 'react-icons/tb';
+import { useSearchTermStore } from '@/app/store/searchTerm.store';
 import type { Availability, Category, Product } from '../../types/products.type';
 import FilterModal from './FilterModal';
 import ItemCard from './ItemCard';
-import { useSearchTermStore } from '@/app/store/searchTerm.store';
 
 export interface FilterQuery {
   availability: Availability[];
@@ -13,10 +13,11 @@ export interface FilterQuery {
 
 type Props = {
   data: Product[];
+  categoryPage?:string
 };
 
-const ProductList = ({data}:Props) => {
-  const searchTeem = useSearchTermStore(state=>state.searchTerm)
+const ProductList = ({ data , categoryPage}: Props) => {
+  const searchTeem = useSearchTermStore((state) => state.searchTerm);
   const [products, setProducts] = useState<Product[]>(data);
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false);
   const [query, setQuery] = useState<FilterQuery | null>(null);
@@ -30,35 +31,31 @@ const ProductList = ({data}:Props) => {
   };
 
   useEffect(() => {
-    setProducts(data)
+    setProducts(data);
+
     if (query) {
-      data.map(item=>{
-        console.log(item)
-        console.log(item.stock===0 )
-      })
       setProducts((prev) =>
-      prev.filter((item) => {
-        const categoryMatch =
-          query.category.length === 0 ||
-          query.category.includes(item.category);
+        prev.filter((item) => {
+          const categoryMatch =
+            query.category.length === 0 || query.category.includes(item.category);
 
-        const availabilityMatch =
-          query.availability.length === 0 ||
-          (query.availability.includes('in-stock') && item.stock > 0) ||
-          (query.availability.includes('out-stock') && item.stock === 0);
+          const availabilityMatch =
+            query.availability.length === 0 ||
+            (query.availability.includes('in-stock') && item.stock > 0) ||
+            (query.availability.includes('out-stock') && item.stock === 0);
 
-        return categoryMatch && availabilityMatch;
-      })
-    );
+          return categoryMatch && availabilityMatch;
+        }),
+      );
     }
 
     //filter out with product name
-    if(searchTeem){
-      setProducts(prev=>
-        prev.filter(item=> item.name.toLowerCase().includes(searchTeem.toLowerCase()))
-      )
+    if (searchTeem) {
+      setProducts((prev) =>
+        prev.filter((item) => item.name.toLowerCase().includes(searchTeem.toLowerCase())),
+      );
     }
-  }, [query,searchTeem]);
+  }, [query, searchTeem]);
 
   return (
     <div className="pt-4">
@@ -70,7 +67,7 @@ const ProductList = ({data}:Props) => {
           Filter
           <TbAdjustmentsHorizontal className="text-xl text-[#008FAB]" />
         </div>
-        {filterModalOpen && <FilterModal setQuery={handleSetQuery} onClose={onCloseModal} />}
+        {filterModalOpen && <FilterModal setQuery={handleSetQuery} onClose={onCloseModal} categoryPage={categoryPage} />}
 
         <div>
           <div>{products.length} products</div>
@@ -81,15 +78,22 @@ const ProductList = ({data}:Props) => {
         <div className="w-full pt-20 text-2xl flex justify-center">No Matching Products Found</div>
       ) : (
         <div className="py-4 px-8">
-          {searchTeem&&
-            <div
-            className='font-bold max-w-350 mx-auto'>
-              Showing "{searchTeem}" Result...
-              </div>}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-4 max-w-350 mx-auto">
+          <div
+          className='max-w-350 mx-auto'>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-4">
+          {searchTeem && (
+            <>
+            <div className="font-bold my-4 text-lg md:text-xl w-62.5 justify-self-center">
+              Showing "{searchTeem}" Result...</div>
+            <div className='hidden sm:block'></div>
+            <div className='hidden lg:block'></div>
+            <div className='hidden lg:block'></div>
+            </>
+          )}
             {products.map((item, i) => (
               <ItemCard product={item} key={i} />
             ))}
+          </div>
           </div>
         </div>
       )}

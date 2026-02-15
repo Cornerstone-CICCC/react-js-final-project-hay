@@ -61,7 +61,7 @@ const ShippingAndReturn = () => {
 
         <ol className="flex flex-col gap-2 list-disc py-4 text-sm md:text-[15px]">
           {shippingContents.map((item, i) => (
-            <li key={i}>
+            <li key={`sc-${i}`}>
               <span className="font-semibold text-[16px]">{item.headline}: </span>
               {item.text}
             </li>
@@ -74,7 +74,7 @@ const ShippingAndReturn = () => {
 
         <ol className="flex flex-col gap-2 list-disc py-4 text-sm md:text-[15px]">
           {returnContents.map((item, i) => (
-            <li key={`head-${i}`}>
+            <li key={`head-${i + 56}`}>
               <span className="font-semibold text-[16px]">{item.headline}: </span>
               {item.text}
             </li>

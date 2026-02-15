@@ -1,25 +1,29 @@
 'use client';
 
-import { useAuthStore } from '@/app/store/auth.store';
-import { useCartStore } from '@/app/store/cart.store';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useAuthStore } from '@/app/store/auth.store';
+import { useCartStore } from '@/app/store/cart.store';
 
 const OrderSummary = () => {
-  const user = useAuthStore(state=>state.user)
-  const setCartId=useCartStore(state=>state.setCartId)
-  const cartId = useCartStore(state=>state.cartId)
-  const cartItems =useCartStore(state=>state.cartItems)
+  const user = useAuthStore((state) => state.user);
+  const setCartId = useCartStore((state) => state.setCartId);
+  const cartId = useCartStore((state) => state.cartId);
+  const cartItems = useCartStore((state) => state.cartItems);
   const [total, setTotal] = useState<number>(0);
   const [subtotal, setSubTotal] = useState<number>(0);
 
   //calculate total from store
   useEffect(() => {
-    const amount =cartItems.reduce((acc, curr)=>acc+= curr.price*curr.quantity,0)
-    setSubTotal(amount)
-    setTotal(amount)
+    const amount = cartItems.reduce((acc, curr) => (acc += curr.price * curr.quantity), 0);
+    setSubTotal(amount);
+    setTotal(amount);
   }, [JSON.stringify(cartItems)]);
+
+  if(!user){
+    return
+  }
 
   return (
     <div className="p-4 flex flex-col gap-4 justify-center">
