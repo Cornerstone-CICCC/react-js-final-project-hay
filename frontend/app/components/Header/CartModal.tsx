@@ -35,8 +35,8 @@ const CartModal = ({ isOpen, onClose }: Props) => {
     <div
       className={
         isOpen
-          ? 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(0)] bg-[#22222299] transition hidden md:block'
-          : 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(100vw)] transition hidden md:block'
+          ? 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(0)] bg-[#22222299] hidden md:block'
+          : 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(100vw)] hidden md:block'
       }
     >
       <div className="max-w-5xl mx-auto w-full h-full relative">
