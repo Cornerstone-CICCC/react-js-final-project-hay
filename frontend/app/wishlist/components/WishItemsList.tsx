@@ -32,7 +32,7 @@ const WishItemsList = () => {
     };
 
     fetchData();
-  }, [user]);
+  }, [user,data]);
 
   return (
     <div>
