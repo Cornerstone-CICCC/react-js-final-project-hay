@@ -21,12 +21,9 @@ const PaymentForm = () => {
   const cartId = useCartStore((state) => state.cartId);
   const setCartId = useCartStore((state) => state.setCartId);
   const clearCart = useCartStore((state) => state.clearCart);
+  const cartItems = useCartStore(state=>state.cartItems)
 
   const user = useAuthStore((state) => state.user);
-
-  if(!user){
-  }
-
   const stripe = useStripe();
   const elements = useElements();
 
@@ -39,6 +36,7 @@ const PaymentForm = () => {
   }
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    console.log("payment process")
     e.preventDefault();
 
     if (!stripe || !elements) {
@@ -47,20 +45,7 @@ const PaymentForm = () => {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${url}/order-summary/${cartId}`,
-      },
-    });
-
-    if (error.type === 'card_error' || error.type === 'validation_error') {
-      setMessage(error.message as string);
-    } else {
-      setMessage('An unexpected error occurred.');
-    }
-
-    //deactive cart
+        //deactive cart
     const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/carts/inactive`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -79,15 +64,35 @@ const PaymentForm = () => {
       newCart: Cart;
       message: string;
     } = await res.json();
+    console.log(data)
 
     //set new cartId to store
     setCartId(data.newCart._id);
-    clearCart();
+    clearCart()
+    console.log(cartItems)
     setIsLoading(false);
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${url}/order-summary/${cartId}`,
+      },
+    });
+
+    if (error.type === 'card_error' || error.type === 'validation_error') {
+      setMessage(error.message as string);
+    } else {
+      setMessage('An unexpected error occurred.');
+    }
+
   };
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
+    <form id="payment-form" 
+    onSubmit={handleSubmit}
+    className='max-w-130 mx-auto'>
+      <h2
+      className='text-xl md:text-2xl text-center font-bold py-10 md:py-15'>Payment Method & Details</h2>
       <PaymentElement id="payment-element" />
       <div className="py-15 px-6 flex justify-center">
         <button

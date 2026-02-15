@@ -118,6 +118,7 @@ const ItemDetail = ({ product }: Props) => {
   };
 
   const addToCart = async () => {
+
     if(!user ||!cartId){
       toast.custom((t) => (
         <div
@@ -219,7 +220,7 @@ const ItemDetail = ({ product }: Props) => {
       document.removeEventListener('handleChange', handleChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [user]);
+  }, [user,cartId]);
 
   return (
     <>

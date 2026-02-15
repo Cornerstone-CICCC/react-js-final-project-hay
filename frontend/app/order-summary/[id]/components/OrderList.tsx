@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { product } from '@/app/products/dummy';
 import type { Product } from '@/app/types/products.type';
+import { useCartStore } from '@/app/store/cart.store';
+import { useAuthStore } from '@/app/store/auth.store';
 
 type Props = {
   data: OrderItem[];
@@ -17,6 +19,9 @@ const OrderList = ({ data }: Props) => {
   const [total, setTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
 
+  const useId = useAuthStore(s=>s.user?.id)
+  const cartId = useCartStore(setDiscount=>setDiscount.cartId)
+
   useEffect(() => {
     const newSubtotal = data.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
 
@@ -28,6 +33,10 @@ const OrderList = ({ data }: Props) => {
 
     setTotal(total);
   }, [data, discount]);
+
+  useEffect(()=>{
+
+  },[useId, cartId])
 
   return (
     <div className="md:w-[70%] max-w-225 mx-auto">

@@ -42,8 +42,7 @@ const ItemCard = ({ product }: Props) => {
 
   useEffect(() => {
     const found = cartItems.find((item) => item.productId === product._id);
-    const wfound = wishItems.find((item) => item.productId === product._id);
-    console.log(wfound);
+
     if (found) {
       setIsInBag(found);
     }

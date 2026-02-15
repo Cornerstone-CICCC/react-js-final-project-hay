@@ -149,6 +149,7 @@ const ShoppingBagList = () => {
   };
 
   useEffect(() => {
+    console.log("cartId",cartId)
     const fetchData = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartItems/${cartId}`);
 
@@ -205,7 +206,13 @@ const ShoppingBagList = () => {
       <div>
         <h2 className="py-6 text-3xl border-b border-[rgba(0,143,171,0.5)]">Shopping Bag</h2>
 
-        {cartItems.map((item) => (
+        {cartItems.length===0?(
+          <div
+          className='py-6 text-lg text-center'>
+            Nothing in your bag
+          </div>
+        )
+        :cartItems.map((item) => (
           <div
             key={`cartItem-${item.cartItemId}`}
             className="py-4 px-4 md:px-8 flex gap-6 border-b border-[rgba(0,143,171,0.5)]"

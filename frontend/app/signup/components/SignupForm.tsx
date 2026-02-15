@@ -130,7 +130,8 @@ const SignupForm = () => {
         firstname: data.newUser.firstname,
       });
       setCart([]);
-      setCartId(data.cartId);
+
+      setCartId(data.cart._id);
       setWishlist([]);
 
       router.push('/');
