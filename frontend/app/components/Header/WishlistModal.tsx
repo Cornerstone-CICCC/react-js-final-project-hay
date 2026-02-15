@@ -18,7 +18,6 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
   const user = useAuthStore((s) => s.user);
 
   const handleRemove = async (wishlistId: string, productId: string) => {
-    removeWishItem(productId);
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${wishlistId}`, {
@@ -31,6 +30,8 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
     } catch (err) {
       console.error(err);
     }
+
+    removeWishItem(productId);
   };
 
   return (
