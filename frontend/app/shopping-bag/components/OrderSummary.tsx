@@ -21,8 +21,8 @@ const OrderSummary = () => {
     setTotal(amount);
   }, [JSON.stringify(cartItems)]);
 
-  if(!user){
-    return
+  if (!user) {
+    return;
   }
 
   return (

@@ -52,7 +52,7 @@ const page = async ({ params }: Props) => {
         </div>
       </div>
 
-      <ProductList data={filteredData} categoryPage={slug}/>
+      <ProductList data={filteredData} categoryPage={slug} />
     </div>
   );
 };

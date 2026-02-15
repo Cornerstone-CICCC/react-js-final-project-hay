@@ -1,15 +1,15 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { PiHandbagSimpleFill, PiHandbagThin, PiHeartFill, PiHeartThin } from 'react-icons/pi';
 import { useAuthStore } from '@/app/store/auth.store';
 import { type CartItem, useCartStore } from '@/app/store/cart.store';
 import useSocketStore from '@/app/store/socket.store';
 import { useWishlistStore, type WishItem } from '@/app/store/wishlist.store';
 import type { Product } from '@/app/types/products.type';
-import toast from 'react-hot-toast';
-import Link from 'next/link';
 
 interface CartItemReturn {
   _id: string;
@@ -49,30 +49,32 @@ const ItemCard = ({ product }: Props) => {
   }, [product]);
 
   const handleToggleCart = async () => {
-    if(!user){
-      toast.custom((t) => (
-        <div
-          className={` max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex`}
-        >
+    if (!user) {
+      toast.custom(
+        (t) => (
           <div
-          className='py-4 px-6 justify-self-center flex-1'>
-            Please 
-            <Link
-            href="/login"
-            className='px-2 font-bold underline'>Login or Signup</Link>
-            to shop
+            className={` max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex`}
+          >
+            <div className="py-4 px-6 justify-self-center flex-1">
+              Please
+              <Link href="/login" className="px-2 font-bold underline">
+                Login or Signup
+              </Link>
+              to shop
+            </div>
+            <div className="flex border-l border-gray-200">
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="cursor-pointer w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium"
+              >
+                Close
+              </button>
+            </div>
           </div>
-          <div className="flex border-l border-gray-200">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="cursor-pointer w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      ),{duration:1500})
-      return
+        ),
+        { duration: 1500 },
+      );
+      return;
     }
     if (product.stock === 0) return;
 
@@ -144,31 +146,32 @@ const ItemCard = ({ product }: Props) => {
     setCart(removedCartItems);
   };
   const handleToggleWishList = async () => {
-
-    if(!user){
-      toast.custom((t) => (
-        <div
-          className={` max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex`}
-        >
+    if (!user) {
+      toast.custom(
+        (t) => (
           <div
-          className='py-4 px-6 justify-self-center flex-1'>
-            Let's  
-            <Link
-            href="/login"
-            className='px-2 font-bold underline'>become a member</Link>
-            to use wishlist feature
+            className={` max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex`}
+          >
+            <div className="py-4 px-6 justify-self-center flex-1">
+              Let's
+              <Link href="/login" className="px-2 font-bold underline">
+                become a member
+              </Link>
+              to use wishlist feature
+            </div>
+            <div className="flex border-l border-gray-200">
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="cursor-pointer w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium"
+              >
+                Close
+              </button>
+            </div>
           </div>
-          <div className="flex border-l border-gray-200">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="cursor-pointer w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      ),{duration:1500})
-      return
+        ),
+        { duration: 1500 },
+      );
+      return;
     }
     //check if wish exist
     const find = wishItems.find((item) => item.productId === product._id);

@@ -149,7 +149,7 @@ const ShoppingBagList = () => {
   };
 
   useEffect(() => {
-    console.log("cartId",cartId)
+    console.log('cartId', cartId);
     const fetchData = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartItems/${cartId}`);
 
@@ -175,23 +175,22 @@ const ShoppingBagList = () => {
     }
   }, [cartId, setCart]);
 
-  if(!user){
-    return(
-      <div
-      className='text-center pt-20 text-lg h-[35vh] mx-auto'>
-        <div
-        className='pb-6'>You are not logged in.</div>
+  if (!user) {
+    return (
+      <div className="text-center pt-20 text-lg h-[35vh] mx-auto">
+        <div className="pb-6">You are not logged in.</div>
         <div>
-          <Link
-          href="/login"
-          className='pr-2 underline font-bold'>
-            Login</Link>or 
-          <Link
-          href="/signup"
-          className='ps-2 underline font-bold'>Signup</Link> to shop
+          <Link href="/login" className="pr-2 underline font-bold">
+            Login
+          </Link>
+          or
+          <Link href="/signup" className="ps-2 underline font-bold">
+            Signup
+          </Link>{' '}
+          to shop
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -206,65 +205,63 @@ const ShoppingBagList = () => {
       <div>
         <h2 className="py-6 text-3xl border-b border-[rgba(0,143,171,0.5)]">Shopping Bag</h2>
 
-        {cartItems.length===0?(
-          <div
-          className='py-6 text-lg text-center'>
-            Nothing in your bag
-          </div>
-        )
-        :cartItems.map((item) => (
-          <div
-            key={`cartItem-${item.cartItemId}`}
-            className="py-4 px-4 md:px-8 flex gap-6 border-b border-[rgba(0,143,171,0.5)]"
-          >
-            <Image
-              src={`/assets/shine_studio_images/${item.image}`}
-              width={200}
-              height={150}
-              alt={item.name.slice(0, 10)}
-              className="h-33 md:h-50 aspect-square my-auto"
-            />
+        {cartItems.length === 0 ? (
+          <div className="py-6 text-lg text-center">Nothing in your bag</div>
+        ) : (
+          cartItems.map((item) => (
+            <div
+              key={`cartItem-${item.cartItemId}`}
+              className="py-4 px-4 md:px-8 flex gap-6 border-b border-[rgba(0,143,171,0.5)]"
+            >
+              <Image
+                src={`/assets/shine_studio_images/${item.image}`}
+                width={200}
+                height={150}
+                alt={item.name.slice(0, 10)}
+                className="h-33 md:h-50 aspect-square my-auto"
+              />
 
-            <div className="w-[90%] lg:py-4">
-              <div className="flex justify-between pb-6">
-                <div className="w-[65%] max-w-[380px] w-auto text-sm md:text-[18px]">
-                  {item.name}
+              <div className="w-[90%] lg:py-4">
+                <div className="flex justify-between pb-6">
+                  <div className="w-[65%] max-w-[380px] w-auto text-sm md:text-[18px]">
+                    {item.name}
+                  </div>
+
+                  <RiCloseLargeLine
+                    onClick={() => removeFromCart(item.cartItemId)}
+                    className="text-lg text-[#008FAB] cursor-pointer"
+                  />
                 </div>
 
-                <RiCloseLargeLine
-                  onClick={() => removeFromCart(item.cartItemId)}
-                  className="text-lg text-[#008FAB] cursor-pointer"
-                />
-              </div>
+                <div className="flex justify-between pb-6">
+                  <div className="flex items-center border border-[#008FAB] p-1">
+                    <button
+                      type="button"
+                      className="px-3 py-1 cursor-pointer"
+                      onClick={() => reduceQty(item)}
+                    >
+                      -
+                    </button>
+                    <div>{item.quantity}</div>
+                    <button
+                      type="button"
+                      className="px-3 py-1 cursor-pointer"
+                      onClick={() => increaseQty(item)}
+                    >
+                      +
+                    </button>
+                  </div>
 
-              <div className="flex justify-between pb-6">
-                <div className="flex items-center border border-[#008FAB] p-1">
-                  <button
-                    type="button"
-                    className="px-3 py-1 cursor-pointer"
-                    onClick={() => reduceQty(item)}
-                  >
-                    -
-                  </button>
-                  <div>{item.quantity}</div>
-                  <button
-                    type="button"
-                    className="px-3 py-1 cursor-pointer"
-                    onClick={() => increaseQty(item)}
-                  >
-                    +
-                  </button>
+                  <div>$ {item.price}</div>
                 </div>
 
-                <div>$ {item.price}</div>
-              </div>
-
-              <div className="underline cursor-pointer" onClick={() => addToWishList(item)}>
-                Save for Later
+                <div className="underline cursor-pointer" onClick={() => addToWishList(item)}>
+                  Save for Later
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

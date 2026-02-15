@@ -13,10 +13,10 @@ export interface FilterQuery {
 
 type Props = {
   data: Product[];
-  categoryPage?:string
+  categoryPage?: string;
 };
 
-const ProductList = ({ data , categoryPage}: Props) => {
+const ProductList = ({ data, categoryPage }: Props) => {
   const searchTeem = useSearchTermStore((state) => state.searchTerm);
   const [products, setProducts] = useState<Product[]>(data);
   const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false);
@@ -67,7 +67,13 @@ const ProductList = ({ data , categoryPage}: Props) => {
           Filter
           <TbAdjustmentsHorizontal className="text-xl text-[#008FAB]" />
         </div>
-        {filterModalOpen && <FilterModal setQuery={handleSetQuery} onClose={onCloseModal} categoryPage={categoryPage} />}
+        {filterModalOpen && (
+          <FilterModal
+            setQuery={handleSetQuery}
+            onClose={onCloseModal}
+            categoryPage={categoryPage}
+          />
+        )}
 
         <div>
           <div>{products.length} products</div>
@@ -78,22 +84,22 @@ const ProductList = ({ data , categoryPage}: Props) => {
         <div className="w-full pt-20 text-2xl flex justify-center">No Matching Products Found</div>
       ) : (
         <div className="py-4 px-8">
-          <div
-          className='max-w-350 mx-auto'>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-4">
-          {searchTeem && (
-            <>
-            <div className="font-bold my-4 text-lg md:text-xl w-62.5 justify-self-center">
-              Showing "{searchTeem}" Result...</div>
-            <div className='hidden sm:block'></div>
-            <div className='hidden lg:block'></div>
-            <div className='hidden lg:block'></div>
-            </>
-          )}
-            {products.map((item, i) => (
-              <ItemCard product={item} key={i} />
-            ))}
-          </div>
+          <div className="max-w-350 mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-4">
+              {searchTeem && (
+                <>
+                  <div className="font-bold my-4 text-lg md:text-xl w-62.5 justify-self-center">
+                    Showing "{searchTeem}" Result...
+                  </div>
+                  <div className="hidden sm:block"></div>
+                  <div className="hidden lg:block"></div>
+                  <div className="hidden lg:block"></div>
+                </>
+              )}
+              {products.map((item, i) => (
+                <ItemCard product={item} key={i} />
+              ))}
+            </div>
           </div>
         </div>
       )}

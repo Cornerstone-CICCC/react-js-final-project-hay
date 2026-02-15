@@ -1,10 +1,10 @@
 'use client';
+import Link from 'next/link';
 import { use, useEffect, useState } from 'react';
 import { useAuthStore } from '@/app/store/auth.store';
 import { useWishlistStore } from '@/app/store/wishlist.store';
 import type { WishList } from '@/app/types/wishList.types';
 import WishiItem from './WishiItem';
-import Link from 'next/link';
 
 export type WishLists = {
   wishlistId: string;
@@ -23,12 +23,12 @@ const WishItemsList = () => {
   useEffect(() => {
     const fetchData = async () => {
       //fetch wish list
-      if(!user) return
-      console.log(user.userId)
+      if (!user) return;
+      console.log(user.userId);
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${user?.userId}`);
       const data = (await res.json()) as WishLists[];
       console.log(data);
-      setData(data?data:[]);
+      setData(data ? data : []);
     };
 
     fetchData();
@@ -49,34 +49,31 @@ const WishItemsList = () => {
         </div>
       </div>
 
-      {data.length>0?
-      <div className="grid grid-cols-1 md:grid-cols-3 max-w-350 mx-auto py-8 md:py-4 gap-10 md:gap-4 px-6 ">
-        {data.map((item) => (
-          <WishiItem item={item} key={`wish-${item.wishlistId}`} />
-        ))}
-      </div>:
-      <div
-      className='py-10'>
-        {!user?
-        <div
-        className='pt-20'>
-          <div
-          className='text-xl text-center'>
-            Please 
-            <Link
-            href="/login"
-            className='font-bold underline ps-2'>
-            login</Link> to add your wishlist!
-          </div>
-        </div>:
-        <div
-        className='pt-20'>
-          <div
-          className='text-xl text-center'>
-            There is nothing to show here
-          </div>
-        </div>}
-        </div>}
+      {data.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 max-w-350 mx-auto py-8 md:py-4 gap-10 md:gap-4 px-6 ">
+          {data.map((item) => (
+            <WishiItem item={item} key={`wish-${item.wishlistId}`} />
+          ))}
+        </div>
+      ) : (
+        <div className="py-10">
+          {!user ? (
+            <div className="pt-20">
+              <div className="text-xl text-center">
+                Please
+                <Link href="/login" className="font-bold underline ps-2">
+                  login
+                </Link>{' '}
+                to add your wishlist!
+              </div>
+            </div>
+          ) : (
+            <div className="pt-20">
+              <div className="text-xl text-center">There is nothing to show here</div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

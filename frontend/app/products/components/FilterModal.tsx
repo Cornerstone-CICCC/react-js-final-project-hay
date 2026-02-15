@@ -12,10 +12,10 @@ import type { FilterQuery } from './ProductList';
 type Props = {
   setQuery: (newQuery: FilterQuery) => void;
   onClose: () => void;
-  categoryPage?:string
+  categoryPage?: string;
 };
 
-const FilterModal = ({ setQuery, onClose ,categoryPage}: Props) => {
+const FilterModal = ({ setQuery, onClose, categoryPage }: Props) => {
   const [formData, setFormData] = useState<FilterQuery>({
     availability: ['in-stock', 'out-stock'],
     category: ['necklaces', 'earrings', 'rings', 'bracelets', 'ankle-wear'],
@@ -93,15 +93,14 @@ const FilterModal = ({ setQuery, onClose ,categoryPage}: Props) => {
     onClose();
   };
 
-  useEffect(()=>{
-    if(!categoryPage) return
+  useEffect(() => {
+    if (!categoryPage) return;
 
     setFormData({
       availability: ['in-stock', 'out-stock'],
-      category:[categoryPage as Category]
-    })
-
-  },[categoryPage])
+      category: [categoryPage as Category],
+    });
+  }, [categoryPage]);
 
   return (
     <div className="absolute z-10 top-[100%] left-0 w-full h-screen bg-black/30">
@@ -131,25 +130,27 @@ const FilterModal = ({ setQuery, onClose ,categoryPage}: Props) => {
                 </div>
               </AccordionContent>
             </AccordionItem>
-            {!categoryPage&&<AccordionItem key="category" value="category">
-              <AccordionTrigger className="font-bold">Category</AccordionTrigger>
-              <AccordionContent>
-                <div className="flex flex-col gap-2">
-                  {categories.map((item) => (
-                    <div key={item.name} className="flex gap-4">
-                      <input
-                        type="checkbox"
-                        name={item.name}
-                        data-type={item.dataType}
-                        checked={formData.category.includes(item.name)}
-                        onChange={(e) => handleOnChange(e)}
-                      />
-                      <label>{item.label}</label>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>}
+            {!categoryPage && (
+              <AccordionItem key="category" value="category">
+                <AccordionTrigger className="font-bold">Category</AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-col gap-2">
+                    {categories.map((item) => (
+                      <div key={item.name} className="flex gap-4">
+                        <input
+                          type="checkbox"
+                          name={item.name}
+                          data-type={item.dataType}
+                          checked={formData.category.includes(item.name)}
+                          onChange={(e) => handleOnChange(e)}
+                        />
+                        <label>{item.label}</label>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            )}
           </Accordion>
           <div className="w-full my-4 flex justify-center">
             <button
