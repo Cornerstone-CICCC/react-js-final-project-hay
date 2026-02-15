@@ -21,10 +21,10 @@ const WishItemsList = () => {
   const [data, setData] = useState<WishLists[]>([]);
 
   useEffect(() => {
+    console.log("wishlist item updating")
     const fetchData = async () => {
       //fetch wish list
       if (!user) return;
-      console.log(user.userId);
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${user?.userId}`);
       const data = (await res.json()) as WishLists[];
       console.log(data);
@@ -32,7 +32,7 @@ const WishItemsList = () => {
     };
 
     fetchData();
-  }, [user,data]);
+  }, [user,wishItems]);
 
   return (
     <div>

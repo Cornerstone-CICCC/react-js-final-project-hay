@@ -19,7 +19,7 @@ const OrderList = ({ data }: Props) => {
   const [total, setTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
 
-  const useId = useAuthStore((s) => s.user?.id);
+  const useId = useAuthStore((s) => s.user?.userId);
   const cartId = useCartStore((setDiscount) => setDiscount.cartId);
 
   useEffect(() => {
