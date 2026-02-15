@@ -1,35 +1,21 @@
 import { io, type Socket } from 'socket.io-client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Product } from '../types/products.type';
+import type { Product } from '../types/products.type';
 
 let socketInstance: Socket | null = null;
 const URL = process.env.NEXT_PUBLIC_ENDPOINT;
 
-export type TrendingProductDetail = {
-  name: string;
-  price: number;
-  image: string;
-};
-export interface TrendingProductItem {
-  productId: string;
-  productNum: number;
-  productDetail: TrendingProductDetail;
-}
-
-interface initialItem {
-  _id: {
-    _id: string;
-    name: string;
-    price: number;
-    image: string;
+export interface TrendingProducts {
+  results: {
+    productNum: number;
+    productDetail: Product;
   };
-  count: number;
 }
 interface SocketStoreType {
   isConnected: boolean;
   shopperCounter: number | null;
-  trendingProducts: TrendingProductItem[];
+  trendingProducts: TrendingProducts | null;
   initializeSocket: () => void;
   disconnect: () => void;
   joinItem: (data: { productId: string; userId: string }) => void;
@@ -44,7 +30,7 @@ const useSocketStore = create<SocketStoreType>()(
       shopperCounter: null,
       isConnected: false,
       currentProductId: null,
-      trendingProducts: [],
+      trendingProducts: null,
 
       // Initialize socket connection
       initializeSocket: () => {
@@ -64,19 +50,8 @@ const useSocketStore = create<SocketStoreType>()(
           set({ isConnected: false });
         });
 
-        socketInstance.on('initialTrending', (data: initialItem[]) => {
-          // console.log("Initial", data);
-          const formatted: TrendingProductItem[] = data.map((item) => ({
-            productId: item._id._id,
-            productNum: item.count,
-            productDetail: {
-              name: item._id.name,
-              price: item._id.price,
-              image: item._id.image,
-            },
-          }));
-          set({ trendingProducts: formatted });
-          // console.log("Formatted:", formatted)
+        socketInstance.on('initialTrending', (data: any) => {
+          console.log(data);
         });
 
         // Listen for cart updates from other clients/sessions
@@ -91,24 +66,11 @@ const useSocketStore = create<SocketStoreType>()(
             productId: string;
             results: {
               productNum: number;
-              productDetail: TrendingProductDetail;
+              productDetail: Product;
             };
           }) => {
-            console.log('trending top 4:', data);
-            set((state) => {
-              const updated = [
-                ...state.trendingProducts.filter((item) => item.productId !== data.productId),
-                {
-                  productId: data.productId,
-                  productNum: data.results.productNum,
-                  productDetail: data.results.productDetail,
-                },
-              ];
-              updated.sort((a, b) => b.productNum - a.productNum);
-              return {
-                trendingProducts: updated.slice(0, 4),
-              };
-            });
+            console.log(data);
+            set({ trendingProducts: data });
           },
         );
 
