@@ -21,6 +21,10 @@ const OrderSummary = () => {
     setTotal(amount);
   }, [JSON.stringify(cartItems)]);
 
+  if(!user){
+    return
+  }
+
   return (
     <div className="p-4 flex flex-col gap-4 justify-center">
       <h2 className="font-bold text-xl pb-2">Order Summary</h2>

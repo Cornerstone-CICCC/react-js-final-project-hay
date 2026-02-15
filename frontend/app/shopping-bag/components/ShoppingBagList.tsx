@@ -174,6 +174,25 @@ const ShoppingBagList = () => {
     }
   }, [cartId, setCart]);
 
+  if(!user){
+    return(
+      <div
+      className='text-center pt-20 text-lg h-[35vh] mx-auto'>
+        <div
+        className='pb-6'>You are not logged in.</div>
+        <div>
+          <Link
+          href="/login"
+          className='pr-2 underline font-bold'>
+            Login</Link>or 
+          <Link
+          href="/signup"
+          className='ps-2 underline font-bold'>Signup</Link> to shop
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full max-w-250">
       <div className="py-2 w-fit">
