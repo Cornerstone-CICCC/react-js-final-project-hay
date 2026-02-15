@@ -126,7 +126,7 @@ const SignupForm = () => {
       }
 
       setUser({
-        id: data.newUser._id,
+        userId: data.newUser._id,
         firstname: data.newUser.firstname,
       });
       setCart([]);
