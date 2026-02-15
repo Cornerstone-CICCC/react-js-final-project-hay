@@ -17,11 +17,11 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
   const totalWishNum = wishItems.length;
   const user = useAuthStore((s) => s.user);
 
-  const handleRemove = async (productId: string) => {
+  const handleRemove = async (wishlistId: string, productId: string) => {
     removeWishItem(productId);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${productId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${wishlistId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -37,8 +37,8 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
     <div
       className={
         isOpen
-          ? 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(0)] bg-[#22222299] transition hidden md:block'
-          : 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(100vw)] transition hidden md:block'
+          ? 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(0)] bg-[#22222299] hidden md:block'
+          : 'fixed top-0 right-0 z-2 w-full h-full transform-[translateX(100vw)] hidden md:block'
       }
     >
       <div className="max-w-5xl mx-auto w-full h-full relative">
@@ -89,7 +89,7 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
                           <button
                             type="button"
                             className="text-[20px] cursor-pointer text-[#008FAB]"
-                            onClick={() => handleRemove(i.productId)}
+                            onClick={() => handleRemove(i.wishlistId, i.productId)}
                           >
                             <IoCloseOutline />
                           </button>
