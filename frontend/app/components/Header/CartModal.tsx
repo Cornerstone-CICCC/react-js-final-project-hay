@@ -41,7 +41,7 @@ const CartModal = ({ isOpen, onClose }: Props) => {
     >
       <div className="max-w-5xl mx-auto w-full h-full relative">
         <div className="bg-white absolute top-[115px] right-0">
-          <div className="w-[575] bg-[#E9F4F34D] px-13 pt-8 pb-13">
+          <div className="w-[575] max-h-[calc(100vh-115px)] bg-[#E9F4F34D] px-13 pt-8 pb-10 relative">
             <button
               type="button"
               className="text-[30px] cursor-pointer absolute top-[18px] right-[18px]"
@@ -49,13 +49,13 @@ const CartModal = ({ isOpen, onClose }: Props) => {
             >
               <IoCloseOutline />
             </button>
-            <p className="text-center font-semibold text-2xl">
+            <p className="text-center font-semibold text-2xl mb-1">
               Your Bag <span className="text-[#008FAB]">({totalCartNum})</span>
             </p>
             {user ? (
               totalCartNum === 0 ? (
                 <>
-                  <p className="mt-8">Your Shopping Bag is empty.</p>
+                  <p className="mt-7">Your Shopping Bag is empty.</p>
                   <Link
                     href="/products"
                     onClick={onClose}
@@ -66,38 +66,39 @@ const CartModal = ({ isOpen, onClose }: Props) => {
                 </>
               ) : (
                 <>
-                  <ul>
+                  <ul className="max-h-[calc(100vh-307px)] overflow-y-auto">
                     {cartItems.map((i) => (
                       <li
                         key={`h_cart_${i.cartItemId}`}
-                        className="flex gap-5 py-8 border-b-[#008FAB]"
+                        className="flex gap-5 pb-7 mt-7 border-b-1 border-b-[#008FAB80]"
                       >
-                        <div>
-                          <Image
-                            src={`/assets/shine_studio_images/${i.image}`}
-                            alt={i.name}
-                            width={154}
-                            height={154}
-                          />
+                        <Image
+                          src={`/assets/shine_studio_images/${i.image}`}
+                          alt={i.name}
+                          width={154}
+                          height={154}
+                          className="w-[140px] h-[140px]"
+                        />
+                        <div className="py-3">
+                          <p className="text-sm">{i.name}</p>
+                          <p className="mt-4 font-bold">${i.price}</p>
                         </div>
-                        <div>
-                          <p>{i.name}</p>
-                          <p className="mt-4">${i.price}</p>
+                        <div className="py-3">
+                          <button
+                            type="button"
+                            className="text-[20px] cursor-pointer text-[#008FAB]"
+                            onClick={() => handleRemove(i.cartItemId)}
+                          >
+                            <IoCloseOutline />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          className="text-[28px] cursor-pointer text-[#008FAB]"
-                          onClick={() => handleRemove(i.cartItemId)}
-                        >
-                          <IoCloseOutline />
-                        </button>
                       </li>
                     ))}
                   </ul>
                   <Link
                     href="/shopping-bag"
                     onClick={onClose}
-                    className="mt-8 text-center block bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
+                    className="mt-7 text-center block bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
                   >
                     View Shopping Bag
                   </Link>
@@ -105,7 +106,7 @@ const CartModal = ({ isOpen, onClose }: Props) => {
               )
             ) : (
               <>
-                <p className="mt-8">You are not logged in.</p>
+                <p className="mt-7">You are not logged in.</p>
                 <Link
                   href="/login"
                   onClick={onClose}
