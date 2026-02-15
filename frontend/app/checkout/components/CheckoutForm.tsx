@@ -16,7 +16,7 @@ interface Cart {
 }
 
 const PaymentForm = () => {
-  const url = 'http://localhost:3000';
+  const url = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL;
   //old cartId
   const cartId = useCartStore((state) => state.cartId);
   const setCartId = useCartStore((state) => state.setCartId);
@@ -24,14 +24,18 @@ const PaymentForm = () => {
 
   const user = useAuthStore((state) => state.user);
 
+  if(!user){
+  }
+
   const stripe = useStripe();
   const elements = useElements();
 
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  //if user nor cart exist, direnct to 
   if (!user || !cartId) {
-    redirect('/');
+    redirect('/login');
   }
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
