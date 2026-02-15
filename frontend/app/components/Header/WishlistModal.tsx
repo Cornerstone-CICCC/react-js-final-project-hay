@@ -17,11 +17,11 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
   const totalWishNum = wishItems.length;
   const user = useAuthStore((s) => s.user);
 
-  const handleRemove = async (productId: string) => {
+  const handleRemove = async (wishlistId: string, productId: string) => {
     removeWishItem(productId);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${productId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${wishlistId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -89,7 +89,7 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
                           <button
                             type="button"
                             className="text-[20px] cursor-pointer text-[#008FAB]"
-                            onClick={() => handleRemove(i.productId)}
+                            onClick={() => handleRemove(i.wishlistId, i.productId)}
                           >
                             <IoCloseOutline />
                           </button>
