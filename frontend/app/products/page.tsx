@@ -27,11 +27,11 @@ const page = async () => {
           width={100}
           height={400}
           alt="header picture"
-          className="w-full max-h-[450px]"
+          className="w-full min-h-[200px] max-h-[450px] object-cover"
         />
         <div className="absolute top-[50%] -translate-y-[50%] left-[5%] w-[60%]">
-          <h2 className={`text-2xl md:text-4xl ${juliusSansOne.className}`}>
-            {headtext.toUpperCase()}
+          <h2 className={`text-2xl md:text-3xl ${juliusSansOne.className}`}>
+            {headtext}
           </h2>
           <div className="hidden md:block md:border-t w-[80%] max-w-[580px] ms-2"></div>
           <div className="text-xs text-center max-w-[400px] hidden md:block pt-4">{subtext}</div>

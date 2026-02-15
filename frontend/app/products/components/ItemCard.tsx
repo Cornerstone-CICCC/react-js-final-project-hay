@@ -191,7 +191,7 @@ const ItemCard = ({ product }: Props) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: user.id,
+        userId: user.userId,
         productId: product._id,
       }),
     });
