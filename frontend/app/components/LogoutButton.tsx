@@ -7,7 +7,12 @@ import { useCartStore } from '../store/cart.store';
 import { useSearchTermStore } from '../store/searchTerm.store';
 import { useWishlistStore } from '../store/wishlist.store';
 
-const LogoutButton = () => {
+type Props = {
+  logoutLabel?: string;
+  onLogout?: () => void;
+};
+
+const LogoutButton = ({ logoutLabel, onLogout }: Props) => {
   const logout = useAuthStore((s) => s.logout);
   const setSearchTerm = useSearchTermStore((s) => s.setSearchTerm);
   const clearCart = useCartStore((s) => s.clearCart);
@@ -31,6 +36,7 @@ const LogoutButton = () => {
       clearCart();
       setCartId('');
       clearWishlist();
+      onLogout?.();
 
       router.push('/login');
     } catch (err) {
@@ -39,8 +45,8 @@ const LogoutButton = () => {
   };
 
   return (
-    <button type="button" onClick={handleLogout}>
-      <TbLogout />
+    <button type="button" onClick={handleLogout} className="cursor-pointer">
+      {logoutLabel ? <span>{logoutLabel}</span> : <TbLogout />}
     </button>
   );
 };

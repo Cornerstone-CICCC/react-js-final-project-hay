@@ -50,6 +50,10 @@ const useSocketStore = create<SocketStoreType>()(
           set({ isConnected: false });
         });
 
+        socketInstance.on('initialTrending', (data: any) => {
+          console.log(data);
+        });
+
         // Listen for cart updates from other clients/sessions
         socketInstance.on('currentShoppers', (data: { productId: string; count: number }) => {
           console.log(data);
@@ -65,7 +69,7 @@ const useSocketStore = create<SocketStoreType>()(
               productDetail: Product;
             };
           }) => {
-            console.log('trending result:', data);
+            console.log(data);
             set({ trendingProducts: data });
           },
         );

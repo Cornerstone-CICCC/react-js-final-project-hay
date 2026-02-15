@@ -56,12 +56,24 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
             </p>
             {user ? (
               totalWishNum === 0 ? (
-                <p className="mt-8">Your Wishlist is empty.</p>
+                <>
+                  <p className="mt-8">Your Wishlist is empty.</p>
+                  <Link
+                    href="/products"
+                    onClick={onClose}
+                    className="mt-5 text-center block bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
+                  >
+                    Shop products
+                  </Link>
+                </>
               ) : (
                 <>
                   <ul>
-                    {wishItems.map((i) => (
-                      <li key={`h_${i.productId}`} className="flex gap-5 py-8 border-b-[#008FAB]">
+                    {wishItems.map((i, index) => (
+                      <li
+                        key={`h_wish_${i.productId}_${index}`}
+                        className="flex gap-5 py-8 border-b-[#008FAB]"
+                      >
                         <div>
                           <Image
                             src={`/assets/shine_studio_images/${i.image}`}
@@ -84,7 +96,11 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/wishlist" className="mt-8">
+                  <Link
+                    href="/wishlist"
+                    onClick={onClose}
+                    className="mt-8 text-center block bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
+                  >
                     View Wishlist
                   </Link>
                 </>
@@ -92,7 +108,11 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
             ) : (
               <>
                 <p className="mt-8">You are not logged in.</p>
-                <Link href="/login" className="mt-8">
+                <Link
+                  href="/login"
+                  onClick={onClose}
+                  className="mt-5 text-center block bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
+                >
                   Sign In
                 </Link>
               </>

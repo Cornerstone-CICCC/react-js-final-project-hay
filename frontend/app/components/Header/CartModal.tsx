@@ -54,12 +54,24 @@ const CartModal = ({ isOpen, onClose }: Props) => {
             </p>
             {user ? (
               totalCartNum === 0 ? (
-                <p className="mt-8">Your Shopping Bag is empty.</p>
+                <>
+                  <p className="mt-8">Your Shopping Bag is empty.</p>
+                  <Link
+                    href="/products"
+                    onClick={onClose}
+                    className="mt-5 text-center block bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
+                  >
+                    Shop products
+                  </Link>
+                </>
               ) : (
                 <>
                   <ul>
                     {cartItems.map((i) => (
-                      <li key={i.cartItemId} className="flex gap-5 py-8 border-b-[#008FAB]">
+                      <li
+                        key={`h_cart_${i.cartItemId}`}
+                        className="flex gap-5 py-8 border-b-[#008FAB]"
+                      >
                         <div>
                           <Image
                             src={`/assets/shine_studio_images/${i.image}`}
@@ -82,7 +94,11 @@ const CartModal = ({ isOpen, onClose }: Props) => {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/cart" className="mt-8">
+                  <Link
+                    href="/shopping-bag"
+                    onClick={onClose}
+                    className="mt-8 text-center block bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
+                  >
                     View Shopping Bag
                   </Link>
                 </>
@@ -90,7 +106,11 @@ const CartModal = ({ isOpen, onClose }: Props) => {
             ) : (
               <>
                 <p className="mt-8">You are not logged in.</p>
-                <Link href="/login" className="mt-8">
+                <Link
+                  href="/login"
+                  onClick={onClose}
+                  className="mt-5 text-center block bg-[#008FAB] text-white font-bold px-5 py-4 w-full outline-none rounded-xl cursor-pointer transition hover:opacity-86"
+                >
                   Sign In
                 </Link>
               </>

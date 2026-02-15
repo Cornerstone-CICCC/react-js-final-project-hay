@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { IoCloseOutline } from 'react-icons/io5';
+import { useAuthStore } from '@/app/store/auth.store';
+import LogoutButton from '../LogoutButton';
 
 type Props = {
   isOpen: boolean;
@@ -9,6 +11,8 @@ type Props = {
 };
 
 const SpMenuModal = ({ isOpen, onClose }: Props) => {
+  const user = useAuthStore((s) => s.user);
+
   return (
     <div
       className={
@@ -38,9 +42,13 @@ const SpMenuModal = ({ isOpen, onClose }: Props) => {
             </Link>
           </li>
           <li className="border-t pt-6 mt-2">
-            <Link href="/login" onClick={onClose}>
-              Login
-            </Link>
+            {user ? (
+              <LogoutButton logoutLabel="Logout" onLogout={onClose} />
+            ) : (
+              <Link href="/login" onClick={onClose}>
+                Login
+              </Link>
+            )}
           </li>
         </ul>
       </div>
