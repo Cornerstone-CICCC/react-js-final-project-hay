@@ -50,7 +50,7 @@ app.use((req, res, next) => {
 const server = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: allowedOrigin,
         credentials: true,
     },
 });
@@ -65,6 +65,7 @@ mongoose_1.default
     .connect(CONN_STRING, { dbName: "shine_studio" })
     .then(() => {
     console.log("connected to MongoDB!");
+    console.log(process.env.CLIENT_URL);
     //Start Socket.IO
     (0, connection_manager_1.socketHandler)(io);
     server.listen(PORT, () => {
