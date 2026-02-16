@@ -156,7 +156,7 @@ export default function Home() {
           </h2>
           <ul className="flex flex-wrap gap-[16px]">
             <li className="w-full sm:w-[calc((100%-16px)/2)] md:w-[calc((100%-32px)/3)]">
-              <Link href="/products/category/earrings" className="relative">
+              <Link href="/products/category/earrings" className="relative block">
                 <Image
                   src="/assets/home/bnr-earrings.svg"
                   alt="Earrings"
@@ -170,7 +170,7 @@ export default function Home() {
               </Link>
             </li>
             <li className="w-full sm:w-[calc((100%-16px)/2)] md:w-[calc((100%-32px)/3)]">
-              <Link href="/products/category/necklaces" className="relative">
+              <Link href="/products/category/necklaces" className="relative block">
                 <Image
                   src="/assets/home/bnr-necklaces.svg"
                   alt="Necklaces"
@@ -184,7 +184,7 @@ export default function Home() {
               </Link>
             </li>
             <li className="w-full sm:w-[calc((100%-16px)/2)] md:w-[calc((100%-32px)/3)]">
-              <Link href="/products/category/bracelets" className="relative">
+              <Link href="/products/category/bracelets" className="relative block">
                 <Image
                   src="/assets/home/bnr-bracelets.svg"
                   alt="Bracelets"
@@ -198,7 +198,7 @@ export default function Home() {
               </Link>
             </li>
             <li className="w-full sm:w-[calc((100%-16px)/2)] md:w-[calc((100%-32px)/3)]">
-              <Link href="/products/category/rings" className="relative">
+              <Link href="/products/category/rings" className="relative block">
                 <Image
                   src="/assets/home/bnr-rings.svg"
                   alt="Rings"
@@ -212,7 +212,7 @@ export default function Home() {
               </Link>
             </li>
             <li className="w-full sm:w-[calc((100%-16px)/2)] md:w-[calc((100%-32px)/3)]">
-              <Link href="/products/category/ankle-wear" className="relative">
+              <Link href="/products/category/ankle-wear" className="relative block">
                 <Image
                   src="/assets/home/bnr-anklewear.svg"
                   alt="Ankle Wear"
