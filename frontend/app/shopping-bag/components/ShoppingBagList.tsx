@@ -141,10 +141,12 @@ const ShoppingBagList = () => {
   };
 
   const reduceQty = (item: CartItem) => {
+    if(item.quantity===1) return
     updateQuantity(item.cartItemId, item.quantity - 1);
   };
 
   const increaseQty = (item: CartItem) => {
+    if(item.quantity===item.stock) return
     updateQuantity(item.cartItemId, item.quantity + 1);
   };
 
@@ -237,7 +239,7 @@ const ShoppingBagList = () => {
                   <div className="flex items-center border border-[#008FAB] p-1">
                     <button
                       type="button"
-                      className="px-3 py-1 cursor-pointer"
+                      className={`px-3 py-1 cursor-pointer ${item.quantity === 1 && 'text-gray-200'}`}
                       onClick={() => reduceQty(item)}
                     >
                       -
@@ -245,7 +247,7 @@ const ShoppingBagList = () => {
                     <div>{item.quantity}</div>
                     <button
                       type="button"
-                      className="px-3 py-1 cursor-pointer"
+                      className={`px-3 py-1 cursor-pointer ${item.quantity === item.stock && 'text-gray-200'}`}
                       onClick={() => increaseQty(item)}
                     >
                       +
