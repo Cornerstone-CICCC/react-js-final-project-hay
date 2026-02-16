@@ -26,6 +26,7 @@ const WishiItem = ({ item }: Props) => {
   const removeWishItem = useWishlistStore((state) => state.removeWishItem);
   const setCart = useCartStore((state) => state.setCart);
   const cartItems = useCartStore((state) => state.cartItems);
+  const cartItemsLen = cartItems.length;
   const cartId = useCartStore((state) => state.cartId);
   const [isInBag, setIsInBag] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
@@ -74,14 +75,18 @@ const WishiItem = ({ item }: Props) => {
     const newCartItems: CartItem[] = [...cartItems, newItem];
 
     setCart(newCartItems);
+    setUpdate((prev) => !prev);
+    toast('Item added it to your bag');
   };
 
   useEffect(() => {
     const inBag = cartItems.find((t) => t.productId === item.productId);
-    if (inBag) setIsInBag(true);
-  }, []);
-
-  useEffect(() => {}, [update]);
+    if (inBag) {
+      setIsInBag(true);
+    } else {
+      setIsInBag(false);
+    }
+  }, [update, item, cartItemsLen]);
 
   return (
     <div className="flex flex-col w-[70%] max-w-[300px] justify-center mx-auto md:pt-8">

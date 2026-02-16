@@ -255,9 +255,13 @@ const ShoppingBagList = () => {
                   <div>$ {item.price}</div>
                 </div>
 
-                <div className="underline cursor-pointer" onClick={() => addToWishList(item)}>
-                  Save for Later
-                </div>
+                {wishItems.find((w) => w.productId === item.productId) === undefined ? (
+                  <div className="underline cursor-pointer" onClick={() => addToWishList(item)}>
+                    Save for Later
+                  </div>
+                ) : (
+                  <div className="text-xs">This item is in your wishlist</div>
+                )}
               </div>
             </div>
           ))

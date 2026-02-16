@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { use, useEffect, useState } from 'react';
 import { useAuthStore } from '@/app/store/auth.store';
+import { useCartStore } from '@/app/store/cart.store';
 import { useWishlistStore } from '@/app/store/wishlist.store';
 import type { WishList } from '@/app/types/wishList.types';
 import WishiItem from './WishiItem';
@@ -16,23 +17,23 @@ export type WishLists = {
 
 const WishItemsList = () => {
   const user = useAuthStore((state) => state.user);
+  const cartItems = useCartStore((state) => state.cartItems);
+  const cartItemLen = cartItems.length;
   const wishItems = useWishlistStore((state) => state.wishItems);
   const removeWishItem = useWishlistStore((state) => state.removeWishItem);
   const [data, setData] = useState<WishLists[]>([]);
 
   useEffect(() => {
-    console.log("wishlist item updating")
     const fetchData = async () => {
       //fetch wish list
       if (!user) return;
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${user?.userId}`);
       const data = (await res.json()) as WishLists[];
-      console.log(data);
       setData(data ? data : []);
     };
 
     fetchData();
-  }, [user,wishItems]);
+  }, [user, wishItems]);
 
   return (
     <div>

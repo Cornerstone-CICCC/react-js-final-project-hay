@@ -18,7 +18,6 @@ const WishlistModal = ({ isOpen, onClose }: Props) => {
   const user = useAuthStore((s) => s.user);
 
   const handleRemove = async (wishlistId: string, productId: string) => {
-
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/wishlists/${wishlistId}`, {
         method: 'DELETE',
