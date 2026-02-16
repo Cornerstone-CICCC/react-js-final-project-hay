@@ -1,26 +1,30 @@
 import { stripe } from '@/app/lib/stripe';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const { amount } = await request.json();
+    console.log('Creating payment intent...');
+    console.log('Stripe key exists?', !!process.env.STRIPE_SECRET_KEY);
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount || 1400,
+      amount: 1400,
       currency: 'cad',
       automatic_payment_methods: {
         enabled: true,
       },
     });
 
+    console.log('Payment intent created:', paymentIntent.id);
+
     return NextResponse.json({ 
       clientSecret: paymentIntent.client_secret 
     });
   } catch (error: any) {
     console.error('Payment Intent Creation Error:', error);
+    console.error('Error details:', error.message, error.type);
+    
     return NextResponse.json(
-      { error: error.message },
+      { error: error.message || 'Failed to create payment intent' },
       { status: 500 }
     );
   }
