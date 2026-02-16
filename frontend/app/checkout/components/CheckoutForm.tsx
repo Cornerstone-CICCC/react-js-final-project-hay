@@ -2,7 +2,6 @@
 
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { type Appearance, loadStripe } from '@stripe/stripe-js';
-import { stat } from 'fs';
 import { redirect } from 'next/navigation';
 import { type SubmitEvent, useEffect, useState } from 'react';
 import { useAuthStore } from '@/app/store/auth.store';
@@ -14,6 +13,7 @@ interface Cart {
   userId: string;
   status: 'active' | 'inactive';
 }
+
 
 const PaymentForm = () => {
   const url = process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL;
@@ -30,20 +30,16 @@ const PaymentForm = () => {
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  //if user nor cart exist, direnct to
-  if (!user || !cartId) {
-    return
-  }
-
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    if(!user||!cartId){
+      redirect("/login")
+    }
     console.log('payment process');
     e.preventDefault();
 
     if (!stripe || !elements) {
       return;
     }
-
-    setIsLoading(true);
 
     //deactive cart
     const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/carts/inactive`, {
@@ -55,6 +51,7 @@ const PaymentForm = () => {
       }),
     });
 
+
     if (!res.ok) {
       console.log('Error deactivating cart');
       return;
@@ -65,6 +62,8 @@ const PaymentForm = () => {
       message: string;
     } = await res.json();
     console.log(data);
+
+    setIsLoading(true);
 
     //set new cartId to store
     setCartId(data.newCart._id);
@@ -86,9 +85,6 @@ const PaymentForm = () => {
     }
   };
 
-  useEffect(()=>{
-
-  },[user,cartId])
   return (
     <form id="payment-form" onSubmit={handleSubmit} className="max-w-130 mx-auto">
       <h2 className="text-xl md:text-2xl text-center font-bold py-10 md:py-15">
@@ -117,7 +113,7 @@ type Props = {
 };
 
 export default function CheckoutForm({ clientSecret }: Props) {
-  if (!clientSecret) return;
+  if (!clientSecret) return null;
   const appearance: Appearance = {
     theme: 'stripe',
   };
