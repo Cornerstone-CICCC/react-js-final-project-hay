@@ -4,7 +4,7 @@ import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-
 import { type Appearance, loadStripe } from '@stripe/stripe-js';
 import { stat } from 'fs';
 import { redirect } from 'next/navigation';
-import { type SubmitEvent, useState } from 'react';
+import { type SubmitEvent, useEffect, useState } from 'react';
 import { useAuthStore } from '@/app/store/auth.store';
 import { useCartStore } from '@/app/store/cart.store';
 
@@ -32,7 +32,7 @@ const PaymentForm = () => {
 
   //if user nor cart exist, direnct to
   if (!user || !cartId) {
-    redirect('/login');
+    return
   }
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
@@ -86,6 +86,9 @@ const PaymentForm = () => {
     }
   };
 
+  useEffect(()=>{
+
+  },[user,cartId])
   return (
     <form id="payment-form" onSubmit={handleSubmit} className="max-w-130 mx-auto">
       <h2 className="text-xl md:text-2xl text-center font-bold py-10 md:py-15">
