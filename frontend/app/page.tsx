@@ -243,7 +243,7 @@ export default function Home() {
             </li>
             <li>
               <Image
-                src="/assets/home/logo-STUDIO.png"
+                src="/assets/home/logo-studio.png"
                 alt="STUDIO"
                 width={173}
                 height={54}
@@ -252,7 +252,7 @@ export default function Home() {
             </li>
             <li>
               <Image
-                src="/assets/home/logo-People.png"
+                src="/assets/home/logo-people.png"
                 alt="People"
                 width={131}
                 height={54}
