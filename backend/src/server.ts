@@ -26,8 +26,6 @@ app.use(
   }),
 );
 
-app.options("*", cors());
-
 if (!process.env.COOKIE_PRIMARY_KEY || !process.env.COOKIE_SECONDARY_KEY) {
   throw new Error("Missing cookie keys");
 }

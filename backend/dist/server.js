@@ -25,7 +25,6 @@ app.use((0, cors_1.default)({
     origin: allowedOrigin,
     credentials: true,
 }));
-app.options("*", (0, cors_1.default)());
 if (!process.env.COOKIE_PRIMARY_KEY || !process.env.COOKIE_SECONDARY_KEY) {
     throw new Error("Missing cookie keys");
 }
