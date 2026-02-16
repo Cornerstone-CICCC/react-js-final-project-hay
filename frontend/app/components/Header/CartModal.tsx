@@ -16,8 +16,6 @@ const CartModal = ({ isOpen, onClose }: Props) => {
   const user = useAuthStore((s) => s.user);
 
   const handleRemove = async (cartItemId: string) => {
-    removeCartItem(cartItemId);
-
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/cartitems/${cartItemId}`, {
         method: 'DELETE',
@@ -29,6 +27,8 @@ const CartModal = ({ isOpen, onClose }: Props) => {
     } catch (err) {
       console.error(err);
     }
+
+    removeCartItem(cartItemId);
   };
 
   return (
