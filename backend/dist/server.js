@@ -19,9 +19,10 @@ const cart_route_1 = __importDefault(require("./routes/cart.route"));
 const wishlist_route_1 = __importDefault(require("./routes/wishlist.route"));
 // Create server
 const app = (0, express_1.default)();
+const allowedOrigin = process.env.CLIENT_URL;
 //Middleware
 app.use((0, cors_1.default)({
-    origin: "http://localhost:3000",
+    origin: allowedOrigin,
     credentials: true,
 }));
 if (!process.env.COOKIE_PRIMARY_KEY || !process.env.COOKIE_SECONDARY_KEY) {

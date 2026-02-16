@@ -16,10 +16,12 @@ import wishlistRouter from "./routes/wishlist.route";
 // Create server
 const app = express();
 
+const allowedOrigin = process.env.CLIENT_URL;
+
 //Middleware
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: allowedOrigin,
     credentials: true,
   }),
 );
